@@ -44,6 +44,8 @@ clippy.Balloon.prototype = {
         var o = this._targetEl.offset();
         var h = this._targetEl.height();
         var w = this._targetEl.width();
+        o.top -= $(window).scrollTop();
+        o.left -= $(window).scrollLeft();
 
         var bH = this._balloon.outerHeight();
         var bW = this._balloon.outerWidth();
@@ -185,8 +187,11 @@ clippy.Balloon.prototype = {
     },
 
     resume:function () {
-        if (this._addWord)  this._addWord();
-        this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        if (this._addWord) {
+            this._addWord();
+        } else if (!this._hold && !this._hidden) {
+            this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        }
     }
 
 
