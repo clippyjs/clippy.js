@@ -187,8 +187,11 @@ clippy.Balloon.prototype = {
     },
 
     resume:function () {
-        if (this._addWord)  this._addWord();
-        this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        if (this._addWord) {
+            this._addWord();
+        } else if (!this._hold && !this._hidden) {
+            this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        }
     }
 
 
