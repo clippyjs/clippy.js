@@ -154,6 +154,7 @@ clippy.Balloon.prototype = {
         this._addWord = $.proxy(function () {
             if (!this._active) return;
             if (idx > words.length) {
+                delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
                     complete();
