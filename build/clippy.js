@@ -844,7 +844,7 @@ clippy.Balloon.prototype = {
 
 };
 
-clippy.BASE_PATH = 'http://clippy.js.s3.amazonaws.com/Agents/';
+clippy.BASE_PATH = '//clippy.js.s3.amazonaws.com/Agents/';
 
 clippy.load = function (name, successCb, failCb) {
     var path = clippy.BASE_PATH + name;
