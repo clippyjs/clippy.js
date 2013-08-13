@@ -37,7 +37,7 @@ All the agent actions are queued and executed by order, so you could stack them.
 
 ```javascript
 // play a given animation
-agent.Play('Searching');
+agent.play('Searching');
 
 // play a random animation
 agent.animate();
