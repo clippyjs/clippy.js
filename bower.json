@@ -1,0 +1,24 @@
+{
+  "name": "clippy.js",
+  "version": "0.0.1",
+  "homepage": "https://www.smore.com/clippy-js",
+  "authors": [
+    "Allen Bargi <allen.bargi@gmail.com>",
+    "Ali Bosworth",
+    "Johann Philipp Strathausen <strathausen@gmail.com>",
+    "Guangcong Luo <guangcongluo@gmail.com>",
+    "Shlomi Atar <shlomi@smore.com>"
+  ],
+  "description": "Add Clippy or his friends to any website for instant nostalgia.",
+  "keywords": [
+    "clippy"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
