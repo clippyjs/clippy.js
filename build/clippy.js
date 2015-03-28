@@ -172,7 +172,6 @@ clippy.Agent.prototype = {
         }, this);
     },
 
-
     /***
      * Close the current balloon
      */
@@ -184,7 +183,6 @@ clippy.Agent.prototype = {
         time = time || 250;
 
         this._addToQueue(function (complete) {
-            this._onQueueEmpty();
             window.setTimeout(complete, time);
         }, this);
     },
