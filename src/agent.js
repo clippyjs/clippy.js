@@ -195,7 +195,7 @@ clippy.Agent.prototype = {
         this._addToQueue(function (complete) {
             this._onQueueEmpty();
             window.setTimeout(complete, time);
-        });
+        }, this);
     },
 
     /***
