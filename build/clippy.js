@@ -847,7 +847,7 @@ clippy.Balloon.prototype = {
 
 };
 
-clippy.BASE_PATH = '../agents/';
+clippy.BASE_PATH = 'agents/';
 
 clippy.load = function (name, successCb, failCb) {
     var path = clippy.BASE_PATH + name;
@@ -919,7 +919,6 @@ clippy.load._loadSounds = function (name, path) {
 
     return dfd.promise()
 };
-
 
 clippy.load._data = {};
 clippy.load._loadAgent = function (name, path) {
