@@ -1,6 +1,6 @@
 # This isn't very portable. It assumes java is installed and yuicompressor
 # is in the specified location.
-# It also does not error handling.
+# It also does no error handling.
 
 function minimize() {
     java -jar ../yuicompressor-2.4.8.jar $1 > $2

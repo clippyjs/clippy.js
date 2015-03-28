@@ -91,7 +91,8 @@ clippy.load._loadScript = function (src) {
     script.setAttribute('async', 'async');
     script.setAttribute('type', 'text/javascript');
 
-    document.head.appendChild(script);
+    var dochead = document.head || document.getElementsByTagName('head')[0];
+    dochead.appendChild(script);
 };
 
 clippy.load._getAgentDfd = function (name) {
