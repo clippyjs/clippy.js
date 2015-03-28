@@ -56,13 +56,17 @@ clippy.Agent.prototype = {
             return;
         }
 
-        return this._playInternal('Hide', function () {
-            el.hide();
-            this.pause();
-            if (callback) callback();
-        })
+        this._addToQueue(function (complete) {
+            this._animator.showAnimation('Hide', $.proxy(function (name, state) {
+                if (state === clippy.Animator.States.EXITED) {
+                    el.hide();
+                    this.pause();
+                    if (callback) callback();
+                    complete();
+                }
+            }, this));
+        }, this);
     },
-
 
     moveTo:function (x, y, duration) {
         var dir = this._getDirection(x, y);
@@ -99,21 +103,8 @@ clippy.Agent.prototype = {
 
             }, this);
 
-            this._playInternal(anim, callback);
+            this._animator.showAnimation(anim, callback);
         }, this);
-    },
-
-    _playInternal:function (animation, callback) {
-        // if we're inside an idle animation,
-        if (this._isIdleAnimation() && this._idleDfd && this._idleDfd.state() === 'pending') {
-            this._idleDfd.done($.proxy(function () {
-                this._playInternal(animation, callback);
-            }, this))
-            this._animator.exitAnimation();
-            return;
-        }
-
-        this._animator.showAnimation(animation, callback);
     },
 
     play:function (animation, timeout, cb) {
@@ -141,7 +132,7 @@ clippy.Agent.prototype = {
                 }, this), timeout)
             }
 
-            this._playInternal(animation, callback);
+            this._animator.showAnimation(animation, callback);
         }, this);
 
         return true;
@@ -180,7 +171,6 @@ clippy.Agent.prototype = {
             this._balloon.speak(complete, text, hold);
         }, this);
     },
-
 
     /***
      * Close the current balloon
@@ -439,6 +429,16 @@ clippy.Agent.prototype = {
 
     _addToQueue:function (func, scope) {
         if (scope) func = $.proxy(func, scope);
+        
+        // if we're inside an idle animation,
+        if (this._isIdleAnimation() && this._idleDfd && this._idleDfd.state() === 'pending') {
+            this._idleDfd.done($.proxy(function () {
+                this._queue.queue(func);
+            }, this))
+            this._animator.exitAnimation();
+            return;
+        }
+        
         this._queue.queue(func);
     },
 
