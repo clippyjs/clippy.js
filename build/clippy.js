@@ -104,12 +104,13 @@ clippy.Agent.prototype = {
     },
 
     _playInternal:function (animation, callback) {
-
         // if we're inside an idle animation,
         if (this._isIdleAnimation() && this._idleDfd && this._idleDfd.state() === 'pending') {
             this._idleDfd.done($.proxy(function () {
                 this._playInternal(animation, callback);
             }, this))
+            this._animator.exitAnimation();
+            return;
         }
 
         this._animator.showAnimation(animation, callback);
@@ -119,7 +120,6 @@ clippy.Agent.prototype = {
         if (!this.hasAnimation(animation)) return false;
 
         if (timeout === undefined) timeout = 5000;
-
 
         this._addToQueue(function (complete) {
             var completed = false;
@@ -262,7 +262,6 @@ clippy.Agent.prototype = {
 
         var centerX = (offset.left + w / 2);
         var centerY = (offset.top + h / 2);
-
 
         var a = centerY - y;
         var b = centerX - x;
