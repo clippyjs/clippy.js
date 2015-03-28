@@ -285,20 +285,21 @@ clippy.Agent.prototype = {
     _onIdleComplete:function (name, state) {
         if (state === clippy.Animator.States.EXITED) {
             this._idleDfd.resolve();
+            
+            // Always play some idle animation.
+            this._queue.next();
         }
     },
 
-
     /***
-     * Is the current animation is Idle?
+     * Is an Idle animation currently playing?
      * @return {Boolean}
      * @private
      */
     _isIdleAnimation:function () {
         var c = this._animator.currentAnimationName;
-        return c && c.indexOf('Idle') === 0;
+        return c && c.indexOf('Idle') == 0 && this._idleDfd && this._idleDfd.state() === 'pending';
     },
-
 
     /**
      * Gets a random Idle animation
@@ -430,7 +431,7 @@ clippy.Agent.prototype = {
         if (scope) func = $.proxy(func, scope);
         
         // if we're inside an idle animation,
-        if (this._isIdleAnimation() && this._idleDfd && this._idleDfd.state() === 'pending') {
+        if (this._isIdleAnimation()) {
             this._idleDfd.done($.proxy(function () {
                 this._queue.queue(func);
             }, this))
