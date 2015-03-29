@@ -143,7 +143,6 @@ clippy.Agent.prototype = {
      * @param {Boolean=} fast
      */
     show:function (fast) {
-
         this._hidden = false;
         if (fast) {
             this._el.show();
@@ -173,10 +172,20 @@ clippy.Agent.prototype = {
     },
 
     /***
+     *
+     * @param {String} text
+     */
+    ask:function (text, choices, callback) {
+        this._addToQueue(function (complete) {
+            this._balloon.ask(complete, text, choices, callback);
+        }, this);
+    },
+
+    /***
      * Close the current balloon
      */
     closeBalloon:function () {
-        this._balloon.hide();
+        this._balloon.close();
     },
 
     delay:function (time) {
@@ -200,7 +209,7 @@ clippy.Agent.prototype = {
         // clear the queue
         this._queue.clear();
         this._animator.exitAnimation();
-        this._balloon.hide();
+        this._balloon.close();
     },
 
     /***
@@ -379,7 +388,7 @@ clippy.Agent.prototype = {
     _startDrag:function (e) {
         // pause animations
         this.pause();
-        this._balloon.hide(true);
+        this._balloon.hide();
         this._offset = this._calculateClickOffset(e);
 
         this._moveHandle = $.proxy(this._dragMove, this);

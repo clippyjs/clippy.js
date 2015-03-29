@@ -143,7 +143,6 @@ clippy.Agent.prototype = {
      * @param {Boolean=} fast
      */
     show:function (fast) {
-
         this._hidden = false;
         if (fast) {
             this._el.show();
@@ -173,10 +172,20 @@ clippy.Agent.prototype = {
     },
 
     /***
+     *
+     * @param {String} text
+     */
+    ask:function (text, choices, callback) {
+        this._addToQueue(function (complete) {
+            this._balloon.ask(complete, text, choices, callback);
+        }, this);
+    },
+
+    /***
      * Close the current balloon
      */
     closeBalloon:function () {
-        this._balloon.hide();
+        this._balloon.close();
     },
 
     delay:function (time) {
@@ -200,7 +209,7 @@ clippy.Agent.prototype = {
         // clear the queue
         this._queue.clear();
         this._animator.exitAnimation();
-        this._balloon.hide();
+        this._balloon.close();
     },
 
     /***
@@ -379,7 +388,7 @@ clippy.Agent.prototype = {
     _startDrag:function (e) {
         // pause animations
         this.pause();
-        this._balloon.hide(true);
+        this._balloon.hide();
         this._offset = this._calculateClickOffset(e);
 
         this._moveHandle = $.proxy(this._dragMove, this);
@@ -660,12 +669,10 @@ clippy.Balloon = function (targetEl) {
 };
 
 clippy.Balloon.prototype = {
-
     WORD_SPEAK_TIME:200,
     CLOSE_BALLOON_DELAY:2000,
 
     _setup:function () {
-
         this._balloon = $('<div class="clippy-balloon"><div class="clippy-tip"></div><div class="clippy-content"></div></div> ').hide();
         this._content = this._balloon.find('.clippy-content');
 
@@ -767,7 +774,31 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, hold, complete);
+        this._sayWords(text, [], hold, complete);
+    },
+
+    ask:function (complete, text, choiceTexts, callback) {
+        choices = []
+        for (var i in choiceTexts) {
+            choices.push('<div class="clippy-choice">' + choiceTexts[i] + '</div>');
+        }
+        
+        this._hidden = false;
+        this.show();
+        var c = this._content;
+        c.height('auto');
+        c.width('auto');
+        c.text(text);
+        for (var i in choices) {
+            c.append(choices[i]);
+        }
+        c.height(c.height());
+        c.width(c.width());
+        c.text('');
+        this.reposition();
+
+        this._complete = complete;
+        this._sayWords(text, choices, true, complete, callback);
     },
 
     show:function () {
@@ -775,23 +806,11 @@ clippy.Balloon.prototype = {
         this._balloon.show();
     },
 
-    hide:function (fast) {
-        if (fast) {
-            this._balloon.hide();
-            return;
-        }
-
-        this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
-    },
-
-    _finishHideBalloon:function () {
-        if (this._active) return;
+    hide:function () {
         this._balloon.hide();
-        this._hidden = true;
-        this._hiding = null;
     },
 
-    _sayWords:function (text, hold, complete) {
+    _sayWords:function (text, choices, hold, complete, callback) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -799,33 +818,61 @@ clippy.Balloon.prototype = {
         var el = this._content;
         var idx = 1;
 
-
         this._addWord = $.proxy(function () {
             if (!this._active) return;
-            if (idx > words.length) {
+            if (idx <= words.length) {
+                el.text(words.slice(0, idx).join(' '));
+                idx++;
+                this._loop = window.setTimeout($.proxy(this._addWord, this), time);
+            } else {
+                for (var i in choices) {
+                    el.append(choices[i]);
+                }
+                self = this;
+                $(".clippy-choice").click(function() {
+                    self.close(true);
+                    callback($(this).text());
+                });
                 delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
                     complete();
-                    this.hide();
+                    delete this._complete;
+                    this.close();
                 }
-            } else {
-                el.text(words.slice(0, idx).join(' '));
-                idx++;
-                this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             }
         }, this);
 
         this._addWord();
-
     },
 
-    close:function () {
+    close:function (fast) {
         if (this._active) {
             this._hold = false;
-        } else if (this._hold) {
-            this._complete();
+            return;
         }
+        if (this._hold) {
+            this._hold = false;
+            if (this._complete) {
+                this._complete();
+                delete this._complete;
+            }
+        }
+        if (!self._hidden) {
+            if (fast) {
+                this._balloon.hide();
+                this._hidden = true;
+            } else {
+                this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+            }
+        }
+    },
+
+    _finishHideBalloon:function () {
+        if (this._active) return;
+        this._balloon.hide();
+        this._hidden = true;
+        this._hiding = null;
     },
 
     pause:function () {
@@ -843,8 +890,6 @@ clippy.Balloon.prototype = {
             this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
         }
     }
-
-
 };
 
 clippy.BASE_PATH = 'agents/';
