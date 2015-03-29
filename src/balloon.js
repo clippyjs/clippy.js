@@ -122,7 +122,8 @@ clippy.Balloon.prototype = {
     ask:function (complete, text, choiceTexts, callback) {
         choices = []
         for (var i in choiceTexts) {
-            choices.push('<div class="clippy-choice">' + choiceTexts[i] + '</div>');
+            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
+            choices.push(d);
         }
         
         this._hidden = false;
