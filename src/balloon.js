@@ -173,7 +173,7 @@ clippy.Balloon.prototype = {
                 }
                 self = this;
                 $(".clippy-choice").click(function() {
-                    self.close(true);
+                    this.close(true);
                     if (callback) {
                         callback($(this).text());
                     }
