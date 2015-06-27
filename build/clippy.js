@@ -465,6 +465,7 @@ clippy.Agent.prototype = {
     }
 
 };
+
 /******
  *
  *
@@ -656,6 +657,7 @@ clippy.Animator.prototype = {
 };
 
 clippy.Animator.States = { WAITING:1, EXITED:0 };
+
 /******
  *
  *
@@ -895,6 +897,7 @@ clippy.Balloon.prototype = {
     }
 };
 
+
 clippy.BASE_PATH = 'agents/';
 
 clippy.load = function (name, successCb, failCb, path) {
@@ -1013,6 +1016,7 @@ clippy.soundsReady = function (name, data) {
 
     dfd.resolve(data);
 };
+
 /******
  * Tiny Queue
  *
