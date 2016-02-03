@@ -781,20 +781,21 @@ clippy.Balloon.prototype = {
 
     ask:function (complete, text, choiceTexts, callback) {
         choices = []
-        for (var i in choiceTexts) {
-            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
+        for (var i = 0; i < choiceTexts.length; i++) {
+			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
             choices.push(d);
-        }
-        
+		}
         this._hidden = false;
         this.show();
         var c = this._content;
         c.height('auto');
         c.width('auto');
         c.text(text);
+        c.append('<div>')
         for (var i in choices) {
             c.append(choices[i]);
         }
+        c.append('</div>')
         c.height(c.height());
         c.width(c.width());
         c.text('');
@@ -828,9 +829,10 @@ clippy.Balloon.prototype = {
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
-                for (var i in choices) {
-                    el.append(choices[i]);
-                }
+            	var div = el.append('<div class="questions" />')
+            	for (var i = 0; i < choices.length; i++) {
+            		choices[i].appendTo( '.questions');
+				}
                 self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
@@ -898,7 +900,7 @@ clippy.Balloon.prototype = {
 };
 
 
-clippy.BASE_PATH = 'agents/';
+clippy.BASE_PATH = '/javax.faces.resource/javascript/library/clippy.js/build//agents/';
 
 clippy.load = function (name, successCb, failCb, path) {
     path = path || clippy.BASE_PATH + name;
