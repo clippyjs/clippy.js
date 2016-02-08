@@ -191,12 +191,12 @@ clippy.Agent.prototype = {
     /***
      * Pause the current balloon
      */
-//    pause:function () {
-//    	this._balloon.pause();
-//    },
-//    resume:function () {
-//    	this._balloon.resume();
-//    },
+    pause:function () {
+    	this._balloon.pause();
+    },
+    resume:function () {
+    	this._balloon.resume();
+    },
 
     delay:function (time, callback) {
         time = time || 250;
