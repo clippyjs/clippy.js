@@ -164,7 +164,7 @@ clippy.Balloon.prototype = {
         this._addWord = $.proxy(function () {
             if (!this._active) return;
             if (idx <= words.length) {
-                el.text(words.slice(0, idx).join(' '));
+                el.html(words.slice(0, idx).join(' '));
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
