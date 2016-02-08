@@ -3,7 +3,7 @@
  *
  * @constructor
  */
-clippy.Animator = function (el, path, data, sounds) {
+clippy.Animator = function (el, path, data, sounds, options) {
     this._el = el;
     this._data = data;
     this._path = path;
@@ -17,6 +17,8 @@ clippy.Animator = function (el, path, data, sounds) {
     this.currentAnimationName = undefined;
     this.preloadSounds(sounds);
     this._overlays = [this._el];
+    options = options || {silent: true};
+    this.silent = options.silent;
     var curr = this._el;
 
     this._setupElement(this._el);
@@ -138,7 +140,7 @@ clippy.Animator.prototype = {
         var s = this._currentFrame.sound;
         if (!s) return;
         var audio = this._sounds[s];
-        if (audio) audio.play();
+        if (!this.silent && audio) audio.play();
     },
 
     _atLastFrame:function () {
