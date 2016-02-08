@@ -165,9 +165,9 @@ clippy.Agent.prototype = {
      *
      * @param {String} text
      */
-    speak:function (text, hold) {
+    speak:function (text, hold, callback) {
         this._addToQueue(function (complete) {
-            this._balloon.speak(complete, text, hold);
+            this._balloon.speak(complete, text, hold, callback);
         }, this);
     },
 
@@ -187,12 +187,27 @@ clippy.Agent.prototype = {
     closeBalloon:function () {
         this._balloon.close();
     },
+    
+    /***
+     * Pause the current balloon
+     */
+    pause:function () {
+    	this._balloon.pause();
+    },
+    resume:function () {
+    	this._balloon.resume();
+    },
 
-    delay:function (time) {
+    delay:function (time, callback) {
         time = time || 250;
 
         this._addToQueue(function (complete) {
-            window.setTimeout(complete, time);
+            window.setTimeout(function(){
+            	complete();
+            	if(callback){
+            		callback();
+            	}
+            }, time);
         }, this);
     },
 
@@ -776,33 +791,32 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, [], hold, complete);
+        this._sayWords(text, [], hold, complete, false);
     },
 
     ask:function (complete, text, choiceTexts, callback) {
         choices = []
-        for (var i = 0; i < choiceTexts.length; i++) {
-			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
+        for (var i in choiceTexts) {
+            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
             choices.push(d);
-		}
+        }
+        
         this._hidden = false;
         this.show();
         var c = this._content;
         c.height('auto');
         c.width('auto');
         c.text(text);
-        c.append('<div>')
         for (var i in choices) {
             c.append(choices[i]);
         }
-        c.append('</div>')
         c.height(c.height());
         c.width(c.width());
         c.text('');
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, choices, true, complete, callback);
+        this._sayWords(text, choices, true, complete, callback, true);
     },
 
     show:function () {
@@ -814,7 +828,7 @@ clippy.Balloon.prototype = {
         this._balloon.hide();
     },
 
-    _sayWords:function (text, choices, hold, complete, callback) {
+    _sayWords:function (text, choices, hold, complete, callback, isQuestion) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -825,14 +839,13 @@ clippy.Balloon.prototype = {
         this._addWord = $.proxy(function () {
             if (!this._active) return;
             if (idx <= words.length) {
-                el.text(words.slice(0, idx).join(' '));
+                el.html(words.slice(0, idx).join(' '));
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
-            	var div = el.append('<div class="questions" />')
-            	for (var i = 0; i < choices.length; i++) {
-            		choices[i].appendTo( '.questions');
-				}
+                for (var i in choices) {
+                    el.append(choices[i]);
+                }
                 self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
@@ -840,6 +853,9 @@ clippy.Balloon.prototype = {
                         callback($(this).text());
                     }
                 });
+                if (!isQuestion && callback) {
+                    callback();
+                }
                 delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
@@ -900,7 +916,7 @@ clippy.Balloon.prototype = {
 };
 
 
-clippy.BASE_PATH = '/javax.faces.resource/javascript/library/clippy.js/build//agents/';
+clippy.BASE_PATH = 'agents/';
 
 clippy.load = function (name, successCb, failCb, path) {
     path = path || clippy.BASE_PATH + name;
