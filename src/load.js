@@ -1,7 +1,7 @@
 clippy.BASE_PATH = 'agents/';
 
 clippy.load = function (name, successCb, failCb, path) {
-    path = path || clippy.BASE_PATH + name;
+    path = path + name || clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);
