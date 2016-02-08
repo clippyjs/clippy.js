@@ -7,7 +7,7 @@ var clippy = {};
  */
 clippy.Agent = function (path, data, sounds) {
     this.path = path;
-
+    
     this._queue = new clippy.Queue($.proxy(this._onQueueEmpty, this));
 
     this._el = $('<div class="clippy"></div>').hide();

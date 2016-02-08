@@ -7,7 +7,7 @@ var clippy = {};
  */
 clippy.Agent = function (path, data, sounds) {
     this.path = path;
-
+    
     this._queue = new clippy.Queue($.proxy(this._onQueueEmpty, this));
 
     this._el = $('<div class="clippy"></div>').hide();
@@ -775,7 +775,7 @@ clippy.Balloon.prototype = {
         return false;
     },
 
-    speak:function (complete, text, hold) {
+    speak:function (complete, text, hold, callback) {
         this._hidden = false;
         this.show();
         var c = this._content;
@@ -791,15 +791,15 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, [], hold, complete, false);
+        this._sayWords(text, [], hold, complete, callback, false);
     },
 
     ask:function (complete, text, choiceTexts, callback) {
-        choices = []
-        for (var i in choiceTexts) {
-            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
-            choices.push(d);
-        }
+        var choices = [];
+        for (var i = 0; i < choiceTexts.length; i++) {
+			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
+           choices.push(d);
+		}
         
         this._hidden = false;
         this.show();
@@ -843,9 +843,10 @@ clippy.Balloon.prototype = {
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
-                for (var i in choices) {
-                    el.append(choices[i]);
-                }
+            	var div = el.append('<div class="questions" />')
+            	for (var i = 0; i < choices.length; i++) {
+            		choices[i].appendTo( '.questions');
+				}
                 self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
@@ -917,9 +918,11 @@ clippy.Balloon.prototype = {
 
 
 clippy.BASE_PATH = 'agents/';
+//clippy.BASE_PATH = '/javax.faces.resource/javascript/library/clippy.js/build/agents/';
+
 
 clippy.load = function (name, successCb, failCb, path) {
-    path = path || clippy.BASE_PATH + name;
+    path = path + name || clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);
