@@ -165,9 +165,9 @@ clippy.Agent.prototype = {
      *
      * @param {String} text
      */
-    speak:function (text, hold) {
+    speak:function (text, hold, callback) {
         this._addToQueue(function (complete) {
-            this._balloon.speak(complete, text, hold);
+            this._balloon.speak(complete, text, hold, callback);
         }, this);
     },
 
@@ -187,12 +187,27 @@ clippy.Agent.prototype = {
     closeBalloon:function () {
         this._balloon.close();
     },
+    
+    /***
+     * Pause the current balloon
+     */
+//    pause:function () {
+//    	this._balloon.pause();
+//    },
+//    resume:function () {
+//    	this._balloon.resume();
+//    },
 
-    delay:function (time) {
+    delay:function (time, callback) {
         time = time || 250;
 
         this._addToQueue(function (complete) {
-            window.setTimeout(complete, time);
+            window.setTimeout(function(){
+            	complete();
+            	if(callback){
+            		callback();
+            	}
+            }, time);
         }, this);
     },
 

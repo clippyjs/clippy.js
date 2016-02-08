@@ -116,7 +116,7 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, [], hold, complete);
+        this._sayWords(text, [], hold, complete, false);
     },
 
     ask:function (complete, text, choiceTexts, callback) {
@@ -141,7 +141,7 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, choices, true, complete, callback);
+        this._sayWords(text, choices, true, complete, callback, true);
     },
 
     show:function () {
@@ -153,7 +153,7 @@ clippy.Balloon.prototype = {
         this._balloon.hide();
     },
 
-    _sayWords:function (text, choices, hold, complete, callback) {
+    _sayWords:function (text, choices, hold, complete, callback, isQuestion) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -178,6 +178,9 @@ clippy.Balloon.prototype = {
                         callback($(this).text());
                     }
                 });
+                if (!isQuestion && callback) {
+                    callback();
+                }
                 delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
