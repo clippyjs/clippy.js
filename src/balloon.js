@@ -172,7 +172,7 @@ clippy.Balloon.prototype = {
             	for (var i = 0; i < choices.length; i++) {
             		choices[i].appendTo( '.questions');
 				}
-                self = this;
+                var self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
                     if (callback) {
