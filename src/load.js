@@ -24,7 +24,7 @@ clippy.load = function (name, successCb, failCb, path) {
         successCb(a);
     };
 
-    $.when(mapDfd, agentDfd, soundsDfd).done(cb).fail(failCb);
+    $.when(mapDfd, agentDfd, soundsDfd).done(cb).fail(failCb); 
 };
 
 clippy.load._maps = {};
