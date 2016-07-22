@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Clippy js bower",
   "main": [
-        "build/clippy.min.js",
-        "build/clippy.css",
+        "./build/clippy.min.js",
+        "./build/clippy.css"
     ],
   "authors": [
     "Darshit Vora <darshitvvora@gmail.com>"
@@ -15,7 +15,7 @@
     "Add Clippy or his friends to any website for instant nostalgia."
   ],
   "license": "MIT",
-  "homepage": "https://github.com/smore-inc/clippy.js",
+  "homepage": "https://github.com/darshitvvora/clippy.js",
   "dependencies": {
         "jquery": ">=1.7"
     }
