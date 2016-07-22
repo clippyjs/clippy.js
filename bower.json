@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Clippy js bower",
   "main": [
-        "./build/clippy.min.js",
-        "./build/clippy.css",
+        "build/clippy.min.js",
+        "build/clippy.css",
     ],
   "authors": [
     "Darshit Vora <darshitvvora@gmail.com>"
