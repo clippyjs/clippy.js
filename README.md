@@ -21,9 +21,17 @@ Add this code to you to your page to enable Clippy.js.
 <!-- Clippy.js -->
 <script src="clippy.min.js"></script>
 
-<!-- Init script -->
+<!-- Init script (using //s3.amazonaws.com/clippy.js/Agents/ as an Agent host) -->
 <script type="text/javascript">
     clippy.load('Merlin', function(agent){
+        // do anything with the loaded agent
+        agent.show();
+    });
+</script>
+
+<!-- Of if you want to define an alternate agent path you can pass a JSON like this -->
+<script type="text/javascript">
+    clippy.load({name:'Clippy', path='/clippy/agents/'}, function(agent){
         // do anything with the loaded agent
         agent.show();
     });
