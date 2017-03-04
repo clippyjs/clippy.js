@@ -1,0 +1,23 @@
+{
+  "name": "clippy.js",
+  "version": "1.0.0",
+  "description": "Add Clippy or his friends to any website for instant nostalgia.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smore-inc/clippy.js.git"
+  },
+  "keywords": [
+    "clippy",
+    "nostalgia",
+    "novelty"
+  ],
+  "author": {
+    "name": "Smore",
+    "url": "https://www.smore.com/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smore-inc/clippy.js/issues"
+  },
+  "homepage": "https://www.smore.com/clippy-js"
+}
