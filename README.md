@@ -39,6 +39,9 @@ All the agent actions are queued and executed by order, so you could stack them.
 // play a given animation
 agent.play('Searching');
 
+// play a given animation for 2 seconds
+agent.play('Searching', 2000);
+
 // play a random animation
 agent.animate();
 
@@ -67,3 +70,13 @@ Special Thanks
 * The awesome [Cinnamon Software](http://www.cinnamonsoftware.com/) for developing [Double Agent](http://doubleagent.sourceforge.net/)
 the program we used to unpack Clippy and his friends!
 * Microsoft, for creating clippy :)
+
+# Development
+
+## Compilation
+
+```
+    npm install
+    npm install -g gulp
+    gulp
+```

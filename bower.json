@@ -1,0 +1,25 @@
+{
+  "name": "clippy.js",
+  "version": "1.0.0",
+  "homepage": "https://www.smore.com/clippy-js",
+  "authors": [
+    "Lucas Fernando Amorim <lf.amorim@bipbop.com.br>"
+  ],
+  "description": "Add Clippy or his friends to any website for instant nostalgia.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "clippy",
+    "office",
+    "microsoft"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

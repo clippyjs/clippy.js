@@ -1,7 +1,7 @@
-clippy.BASE_PATH = '//s3.amazonaws.com/clippy.js/Agents/';
+clippy.BASE_PATH = 'agents/';
 
-clippy.load = function (name, successCb, failCb) {
-    var path = clippy.BASE_PATH + name;
+clippy.load = function (name, successCb, failCb, path) {
+    path = path + name || clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);
@@ -24,7 +24,7 @@ clippy.load = function (name, successCb, failCb) {
         successCb(a);
     };
 
-    $.when(mapDfd, agentDfd, soundsDfd).done(cb).fail(failCb);
+    $.when(mapDfd, agentDfd, soundsDfd).done(cb).fail(failCb); 
 };
 
 clippy.load._maps = {};
@@ -71,7 +71,6 @@ clippy.load._loadSounds = function (name, path) {
     return dfd.promise()
 };
 
-
 clippy.load._data = {};
 clippy.load._loadAgent = function (name, path) {
     var dfd = clippy.load._data[name];
@@ -92,7 +91,8 @@ clippy.load._loadScript = function (src) {
     script.setAttribute('async', 'async');
     script.setAttribute('type', 'text/javascript');
 
-    document.head.appendChild(script);
+    var dochead = document.head || document.getElementsByTagName('head')[0];
+    dochead.appendChild(script);
 };
 
 clippy.load._getAgentDfd = function (name) {

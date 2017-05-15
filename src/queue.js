@@ -16,13 +16,11 @@ clippy.Queue.prototype = {
      */
     queue:function (func) {
         this._queue.push(func);
-
-        if (this._queue.length === 1 && !this._active) {
-            this._progressQueue();
-        }
+        this.next();
     },
 
-    _progressQueue:function () {
+    next:function () {
+        if (this._active) return;
 
         // stop if nothing left in queue
         if (!this._queue.length) {
@@ -34,17 +32,16 @@ clippy.Queue.prototype = {
         this._active = true;
 
         // execute function
-        var completeFunction = $.proxy(this.next, this);
+        var completeFunction = $.proxy(this._finish, this);
         f(completeFunction);
+    },
+
+    _finish:function() {
+        this._active = false;
+        this.next();
     },
 
     clear:function () {
         this._queue = [];
     },
-
-    next:function () {
-        this._active = false;
-        this._progressQueue();
-    }
 };
-

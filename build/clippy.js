@@ -7,7 +7,7 @@ var clippy = {};
  */
 clippy.Agent = function (path, data, sounds) {
     this.path = path;
-
+    
     this._queue = new clippy.Queue($.proxy(this._onQueueEmpty, this));
 
     this._el = $('<div class="clippy"></div>').hide();
@@ -56,13 +56,17 @@ clippy.Agent.prototype = {
             return;
         }
 
-        return this._playInternal('Hide', function () {
-            el.hide();
-            this.pause();
-            if (callback) callback();
-        })
+        this._addToQueue(function (complete) {
+            this._animator.showAnimation('Hide', $.proxy(function (name, state) {
+                if (state === clippy.Animator.States.EXITED) {
+                    el.hide();
+                    this.pause();
+                    if (callback) callback();
+                    complete();
+                }
+            }, this));
+        }, this);
     },
-
 
     moveTo:function (x, y, duration) {
         var dir = this._getDirection(x, y);
@@ -99,27 +103,14 @@ clippy.Agent.prototype = {
 
             }, this);
 
-            this._playInternal(anim, callback);
+            this._animator.showAnimation(anim, callback);
         }, this);
-    },
-
-    _playInternal:function (animation, callback) {
-
-        // if we're inside an idle animation,
-        if (this._isIdleAnimation() && this._idleDfd && this._idleDfd.state() === 'pending') {
-            this._idleDfd.done($.proxy(function () {
-                this._playInternal(animation, callback);
-            }, this))
-        }
-
-        this._animator.showAnimation(animation, callback);
     },
 
     play:function (animation, timeout, cb) {
         if (!this.hasAnimation(animation)) return false;
 
         if (timeout === undefined) timeout = 5000;
-
 
         this._addToQueue(function (complete) {
             var completed = false;
@@ -141,7 +132,7 @@ clippy.Agent.prototype = {
                 }, this), timeout)
             }
 
-            this._playInternal(animation, callback);
+            this._animator.showAnimation(animation, callback);
         }, this);
 
         return true;
@@ -152,7 +143,6 @@ clippy.Agent.prototype = {
      * @param {Boolean=} fast
      */
     show:function (fast) {
-
         this._hidden = false;
         if (fast) {
             this._el.show();
@@ -175,27 +165,50 @@ clippy.Agent.prototype = {
      *
      * @param {String} text
      */
-    speak:function (text, hold) {
+    speak:function (text, hold, callback) {
         this._addToQueue(function (complete) {
-            this._balloon.speak(complete, text, hold);
+            this._balloon.speak(complete, text, hold, callback);
         }, this);
     },
 
+    /***
+     *
+     * @param {String} text
+     */
+    ask:function (text, choices, callback) {
+        this._addToQueue(function (complete) {
+            this._balloon.ask(complete, text, choices, callback);
+        }, this);
+    },
 
     /***
      * Close the current balloon
      */
     closeBalloon:function () {
-        this._balloon.hide();
+        this._balloon.close();
+    },
+    
+    /***
+     * Pause the current balloon
+     */
+    pause:function () {
+    	this._balloon.pause();
+    },
+    resume:function () {
+    	this._balloon.resume();
     },
 
-    delay:function (time) {
+    delay:function (time, callback) {
         time = time || 250;
 
         this._addToQueue(function (complete) {
-            this._onQueueEmpty();
-            window.setTimeout(complete, time);
-        });
+            window.setTimeout(function(){
+            	complete();
+            	if(callback){
+            		callback();
+            	}
+            }, time);
+        }, this);
     },
 
     /***
@@ -211,7 +224,7 @@ clippy.Agent.prototype = {
         // clear the queue
         this._queue.clear();
         this._animator.exitAnimation();
-        this._balloon.hide();
+        this._balloon.close();
     },
 
     /***
@@ -240,7 +253,7 @@ clippy.Agent.prototype = {
         var animations = this.animations();
         var anim = animations[Math.floor(Math.random() * animations.length)];
         // skip idle animations
-        if (anim.indexOf('Idle') === 0) {
+        if (anim.indexOf('Idle') === 0 || anim == 'Show' || anim == 'Hide') {
             return this.animate();
         }
         return this.play(anim);
@@ -262,7 +275,6 @@ clippy.Agent.prototype = {
 
         var centerX = (offset.left + w / 2);
         var centerY = (offset.top + h / 2);
-
 
         var a = centerY - y;
         var b = centerX - x;
@@ -297,20 +309,21 @@ clippy.Agent.prototype = {
     _onIdleComplete:function (name, state) {
         if (state === clippy.Animator.States.EXITED) {
             this._idleDfd.resolve();
+            
+            // Always play some idle animation.
+            this._queue.next();
         }
     },
 
-
     /***
-     * Is the current animation is Idle?
+     * Is an Idle animation currently playing?
      * @return {Boolean}
      * @private
      */
     _isIdleAnimation:function () {
         var c = this._animator.currentAnimationName;
-        return c && c.indexOf('Idle') === 0;
+        return c && c.indexOf('Idle') == 0 && this._idleDfd && this._idleDfd.state() === 'pending';
     },
-
 
     /**
      * Gets a random Idle animation
@@ -390,7 +403,7 @@ clippy.Agent.prototype = {
     _startDrag:function (e) {
         // pause animations
         this.pause();
-        this._balloon.hide(true);
+        this._balloon.hide();
         this._offset = this._calculateClickOffset(e);
 
         this._moveHandle = $.proxy(this._dragMove, this);
@@ -414,7 +427,7 @@ clippy.Agent.prototype = {
     },
 
     _updateLocation:function () {
-        this._el.css({top:this._targetY, left:this._taregtX});
+        this._el.css({top:this._targetY, left:this._targetX});
         this._dragUpdateLoop = window.setTimeout($.proxy(this._updateLocation, this), 10);
     },
 
@@ -422,7 +435,7 @@ clippy.Agent.prototype = {
         e.preventDefault();
         var x = e.clientX - this._offset.left;
         var y = e.clientY - this._offset.top;
-        this._taregtX = x;
+        this._targetX = x;
         this._targetY = y;
     },
 
@@ -440,6 +453,16 @@ clippy.Agent.prototype = {
 
     _addToQueue:function (func, scope) {
         if (scope) func = $.proxy(func, scope);
+        
+        // if we're inside an idle animation,
+        if (this._isIdleAnimation()) {
+            this._idleDfd.done($.proxy(function () {
+                this._queue.queue(func);
+            }, this))
+            this._animator.exitAnimation();
+            return;
+        }
+        
         this._queue.queue(func);
     },
 
@@ -463,7 +486,7 @@ clippy.Agent.prototype = {
  *
  * @constructor
  */
-clippy.Animator = function (el, path, data, sounds) {
+clippy.Animator = function (el, path, data, sounds, options) {
     this._el = el;
     this._data = data;
     this._path = path;
@@ -477,6 +500,8 @@ clippy.Animator = function (el, path, data, sounds) {
     this.currentAnimationName = undefined;
     this.preloadSounds(sounds);
     this._overlays = [this._el];
+    options = options || {silent: true};
+    this.silent = options.silent;
     var curr = this._el;
 
     this._setupElement(this._el);
@@ -598,7 +623,7 @@ clippy.Animator.prototype = {
         var s = this._currentFrame.sound;
         if (!s) return;
         var audio = this._sounds[s];
-        if (audio) audio.play();
+        if (!this.silent && audio) audio.play();
     },
 
     _atLastFrame:function () {
@@ -663,12 +688,10 @@ clippy.Balloon = function (targetEl) {
 };
 
 clippy.Balloon.prototype = {
-
-    WORD_SPEAK_TIME:320,
+    WORD_SPEAK_TIME:200,
     CLOSE_BALLOON_DELAY:2000,
 
     _setup:function () {
-
         this._balloon = $('<div class="clippy-balloon"><div class="clippy-tip"></div><div class="clippy-content"></div></div> ').hide();
         this._content = this._balloon.find('.clippy-content');
 
@@ -696,6 +719,8 @@ clippy.Balloon.prototype = {
         var o = this._targetEl.offset();
         var h = this._targetEl.height();
         var w = this._targetEl.width();
+        o.top -= $(window).scrollTop();
+        o.left -= $(window).scrollLeft();
 
         var bH = this._balloon.outerHeight();
         var bW = this._balloon.outerWidth();
@@ -752,7 +777,7 @@ clippy.Balloon.prototype = {
         return false;
     },
 
-    speak:function (complete, text, hold) {
+    speak:function (complete, text, hold, callback) {
         this._hidden = false;
         this.show();
         var c = this._content;
@@ -768,7 +793,32 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, hold, complete);
+        this._sayWords(text, [], hold, complete, callback, false);
+    },
+
+    ask:function (complete, text, choiceTexts, callback) {
+        var choices = [];
+        for (var i = 0; i < choiceTexts.length; i++) {
+			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
+           choices.push(d);
+		}
+        
+        this._hidden = false;
+        this.show();
+        var c = this._content;
+        c.height('auto');
+        c.width('auto');
+        c.text(text);
+        for (var i in choices) {
+            c.append(choices[i]);
+        }
+        c.height(c.height());
+        c.width(c.width());
+        c.text('');
+        this.reposition();
+
+        this._complete = complete;
+        this._sayWords(text, choices, true, complete, callback, true);
     },
 
     show:function () {
@@ -776,23 +826,11 @@ clippy.Balloon.prototype = {
         this._balloon.show();
     },
 
-    hide:function (fast) {
-        if (fast) {
-            this._balloon.hide();
-            return;
-        }
-
-        this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
-    },
-
-    _finishHideBalloon:function () {
-        if (this._active) return;
+    hide:function () {
         this._balloon.hide();
-        this._hidden = true;
-        this._hiding = null;
     },
 
-    _sayWords:function (text, hold, complete) {
+    _sayWords:function (text, choices, hold, complete, callback, isQuestion) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -800,32 +838,67 @@ clippy.Balloon.prototype = {
         var el = this._content;
         var idx = 1;
 
-
         this._addWord = $.proxy(function () {
             if (!this._active) return;
-            if (idx > words.length) {
+            if (idx <= words.length) {
+                el.html(words.slice(0, idx).join(' '));
+                idx++;
+                this._loop = window.setTimeout($.proxy(this._addWord, this), time);
+            } else {
+            	var div = el.append('<div class="questions" />')
+            	for (var i = 0; i < choices.length; i++) {
+            		choices[i].appendTo( '.questions');
+				}
+                var self = this;
+                $(".clippy-choice").click(function() {
+                    self.close(true);
+                    if (callback) {
+                        callback($(this).text());
+                    }
+                });
+                if (!isQuestion && callback) {
+                    callback();
+                }
+                delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
                     complete();
-                    this.hide();
+                    delete this._complete;
+                    this.close();
                 }
-            } else {
-                el.text(words.slice(0, idx).join(' '));
-                idx++;
-                this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             }
         }, this);
 
         this._addWord();
-
     },
 
-    close:function () {
+    close:function (fast) {
         if (this._active) {
             this._hold = false;
-        } else if (this._hold) {
-            this._complete();
+            return;
         }
+        if (this._hold) {
+            this._hold = false;
+            if (this._complete) {
+                this._complete();
+                delete this._complete;
+            }
+        }
+        if (!this._hidden) {
+            if (fast) {
+                this._balloon.hide();
+                this._hidden = true;
+            } else {
+                this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+            }
+        }
+    },
+
+    _finishHideBalloon:function () {
+        if (this._active) return;
+        this._balloon.hide();
+        this._hidden = true;
+        this._hiding = null;
     },
 
     pause:function () {
@@ -837,17 +910,19 @@ clippy.Balloon.prototype = {
     },
 
     resume:function () {
-        if (this._addWord)  this._addWord();
-        this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        if (this._addWord) {
+            this._addWord();
+        } else if (!this._hold && !this._hidden) {
+            this._hiding = window.setTimeout($.proxy(this._finishHideBalloon, this), this.CLOSE_BALLOON_DELAY);
+        }
     }
-
-
 };
 
-clippy.BASE_PATH = '//s3.amazonaws.com/clippy.js/Agents/';
 
-clippy.load = function (name, successCb, failCb) {
-    var path = clippy.BASE_PATH + name;
+clippy.BASE_PATH = 'agents/';
+
+clippy.load = function (name, successCb, failCb, path) {
+    path = path + name || clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);
@@ -917,7 +992,6 @@ clippy.load._loadSounds = function (name, path) {
     return dfd.promise()
 };
 
-
 clippy.load._data = {};
 clippy.load._loadAgent = function (name, path) {
     var dfd = clippy.load._data[name];
@@ -938,7 +1012,8 @@ clippy.load._loadScript = function (src) {
     script.setAttribute('async', 'async');
     script.setAttribute('type', 'text/javascript');
 
-    document.head.appendChild(script);
+    var dochead = document.head || document.getElementsByTagName('head')[0];
+    dochead.appendChild(script);
 };
 
 clippy.load._getAgentDfd = function (name) {
@@ -981,13 +1056,11 @@ clippy.Queue.prototype = {
      */
     queue:function (func) {
         this._queue.push(func);
-
-        if (this._queue.length === 1 && !this._active) {
-            this._progressQueue();
-        }
+        this.next();
     },
 
-    _progressQueue:function () {
+    next:function () {
+        if (this._active) return;
 
         // stop if nothing left in queue
         if (!this._queue.length) {
@@ -999,17 +1072,16 @@ clippy.Queue.prototype = {
         this._active = true;
 
         // execute function
-        var completeFunction = $.proxy(this.next, this);
+        var completeFunction = $.proxy(this._finish, this);
         f(completeFunction);
+    },
+
+    _finish:function() {
+        this._active = false;
+        this.next();
     },
 
     clear:function () {
         this._queue = [];
     },
-
-    next:function () {
-        this._active = false;
-        this._progressQueue();
-    }
 };
-
