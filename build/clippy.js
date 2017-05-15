@@ -7,7 +7,7 @@ var clippy = {};
  */
 clippy.Agent = function (path, data, sounds) {
     this.path = path;
-
+    
     this._queue = new clippy.Queue($.proxy(this._onQueueEmpty, this));
 
     this._el = $('<div class="clippy"></div>').hide();
@@ -165,9 +165,9 @@ clippy.Agent.prototype = {
      *
      * @param {String} text
      */
-    speak:function (text, hold) {
+    speak:function (text, hold, callback) {
         this._addToQueue(function (complete) {
-            this._balloon.speak(complete, text, hold);
+            this._balloon.speak(complete, text, hold, callback);
         }, this);
     },
 
@@ -187,12 +187,27 @@ clippy.Agent.prototype = {
     closeBalloon:function () {
         this._balloon.close();
     },
+    
+    /***
+     * Pause the current balloon
+     */
+    pause:function () {
+    	this._balloon.pause();
+    },
+    resume:function () {
+    	this._balloon.resume();
+    },
 
-    delay:function (time) {
+    delay:function (time, callback) {
         time = time || 250;
 
         this._addToQueue(function (complete) {
-            window.setTimeout(complete, time);
+            window.setTimeout(function(){
+            	complete();
+            	if(callback){
+            		callback();
+            	}
+            }, time);
         }, this);
     },
 
@@ -471,7 +486,7 @@ clippy.Agent.prototype = {
  *
  * @constructor
  */
-clippy.Animator = function (el, path, data, sounds) {
+clippy.Animator = function (el, path, data, sounds, options) {
     this._el = el;
     this._data = data;
     this._path = path;
@@ -485,6 +500,8 @@ clippy.Animator = function (el, path, data, sounds) {
     this.currentAnimationName = undefined;
     this.preloadSounds(sounds);
     this._overlays = [this._el];
+    options = options || {silent: true};
+    this.silent = options.silent;
     var curr = this._el;
 
     this._setupElement(this._el);
@@ -606,7 +623,7 @@ clippy.Animator.prototype = {
         var s = this._currentFrame.sound;
         if (!s) return;
         var audio = this._sounds[s];
-        if (audio) audio.play();
+        if (!this.silent && audio) audio.play();
     },
 
     _atLastFrame:function () {
@@ -760,7 +777,7 @@ clippy.Balloon.prototype = {
         return false;
     },
 
-    speak:function (complete, text, hold) {
+    speak:function (complete, text, hold, callback) {
         this._hidden = false;
         this.show();
         var c = this._content;
@@ -776,15 +793,15 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, [], hold, complete);
+        this._sayWords(text, [], hold, complete, callback, false);
     },
 
     ask:function (complete, text, choiceTexts, callback) {
-        choices = []
-        for (var i in choiceTexts) {
-            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
-            choices.push(d);
-        }
+        var choices = [];
+        for (var i = 0; i < choiceTexts.length; i++) {
+			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
+           choices.push(d);
+		}
         
         this._hidden = false;
         this.show();
@@ -801,7 +818,7 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, choices, true, complete, callback);
+        this._sayWords(text, choices, true, complete, callback, true);
     },
 
     show:function () {
@@ -813,7 +830,7 @@ clippy.Balloon.prototype = {
         this._balloon.hide();
     },
 
-    _sayWords:function (text, choices, hold, complete, callback) {
+    _sayWords:function (text, choices, hold, complete, callback, isQuestion) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -824,20 +841,24 @@ clippy.Balloon.prototype = {
         this._addWord = $.proxy(function () {
             if (!this._active) return;
             if (idx <= words.length) {
-                el.text(words.slice(0, idx).join(' '));
+                el.html(words.slice(0, idx).join(' '));
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
-                for (var i in choices) {
-                    el.append(choices[i]);
-                }
-                self = this;
+            	var div = el.append('<div class="questions" />')
+            	for (var i = 0; i < choices.length; i++) {
+            		choices[i].appendTo( '.questions');
+				}
+                var self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
                     if (callback) {
                         callback($(this).text());
                     }
                 });
+                if (!isQuestion && callback) {
+                    callback();
+                }
                 delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
@@ -901,7 +922,7 @@ clippy.Balloon.prototype = {
 clippy.BASE_PATH = 'agents/';
 
 clippy.load = function (name, successCb, failCb, path) {
-    path = path || clippy.BASE_PATH + name;
+    path = path + name || clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);

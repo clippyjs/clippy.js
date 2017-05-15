@@ -100,7 +100,7 @@ clippy.Balloon.prototype = {
         return false;
     },
 
-    speak:function (complete, text, hold) {
+    speak:function (complete, text, hold, callback) {
         this._hidden = false;
         this.show();
         var c = this._content;
@@ -116,15 +116,15 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, [], hold, complete);
+        this._sayWords(text, [], hold, complete, callback, false);
     },
 
     ask:function (complete, text, choiceTexts, callback) {
-        choices = []
-        for (var i in choiceTexts) {
-            d = $('<div class="clippy-choice"></div>').text(choiceTexts[i])
-            choices.push(d);
-        }
+        var choices = [];
+        for (var i = 0; i < choiceTexts.length; i++) {
+			 d = $('<a class="clippy-choice"></a>').text(choiceTexts[i])
+           choices.push(d);
+		}
         
         this._hidden = false;
         this.show();
@@ -141,7 +141,7 @@ clippy.Balloon.prototype = {
         this.reposition();
 
         this._complete = complete;
-        this._sayWords(text, choices, true, complete, callback);
+        this._sayWords(text, choices, true, complete, callback, true);
     },
 
     show:function () {
@@ -153,7 +153,7 @@ clippy.Balloon.prototype = {
         this._balloon.hide();
     },
 
-    _sayWords:function (text, choices, hold, complete, callback) {
+    _sayWords:function (text, choices, hold, complete, callback, isQuestion) {
         this._active = true;
         this._hold = hold;
         var words = text.split(/[^\S-]/);
@@ -164,20 +164,24 @@ clippy.Balloon.prototype = {
         this._addWord = $.proxy(function () {
             if (!this._active) return;
             if (idx <= words.length) {
-                el.text(words.slice(0, idx).join(' '));
+                el.html(words.slice(0, idx).join(' '));
                 idx++;
                 this._loop = window.setTimeout($.proxy(this._addWord, this), time);
             } else {
-                for (var i in choices) {
-                    el.append(choices[i]);
-                }
-                self = this;
+            	var div = el.append('<div class="questions" />')
+            	for (var i = 0; i < choices.length; i++) {
+            		choices[i].appendTo( '.questions');
+				}
+                var self = this;
                 $(".clippy-choice").click(function() {
                     self.close(true);
                     if (callback) {
                         callback($(this).text());
                     }
                 });
+                if (!isQuestion && callback) {
+                    callback();
+                }
                 delete this._addWord;
                 this._active = false;
                 if (!this._hold) {
