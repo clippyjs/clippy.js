@@ -1,6 +1,12 @@
-clippy.BASE_PATH = '//s3.amazonaws.com/clippy.js/Agents/';
 
-clippy.load = function (name, successCb, failCb) {
+clippy.load = function (options, successCb, failCb) {
+    if(typeof options === 'string') {
+        var name = options;
+        clippy.BASE_PATH = '//s3.amazonaws.com/clippy.js/Agents/';
+    } else {
+        var name = options.hasOwnProperty('name') ? options.name : 'Clippy';
+        clippy.BASE_PATH = options.hasOwnProperty('path') ? options.path : '//s3.amazonaws.com/clippy.js/Agents/';
+    }
     var path = clippy.BASE_PATH + name;
 
     var mapDfd = clippy.load._loadMap(path);

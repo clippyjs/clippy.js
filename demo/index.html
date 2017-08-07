@@ -1,0 +1,82 @@
+<html>
+  <head>
+    <title>Clippy.js Demonstration</title>
+    <script
+			  src="https://code.jquery.com/jquery-3.1.0.min.js"
+			  integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+			  crossorigin="anonymous"></script>
+    <script
+        src="../build/clippy.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../build/clippy.css" media="all">
+  </head>
+  <body>
+    <label for='Agent'>Agent:</label>
+    <select id='Agent'>
+      <option></option>
+      <option>Bonzi</option>
+      <option>Clippy</option>
+      <option>F1</option>
+      <option>Genie</option>
+      <option>Genius</option>
+      <option>Links</option>
+      <option>Merlin</option>
+      <option>Peedy</option>
+      <option>Rocky</option>
+      <option>Rover</option>
+    </select>
+    <div id='InputTemplate' style='display: none'>
+      <fieldset>
+        <legend data-field='name'>Title</legend>
+        <select data-action='play'></select>
+        <button data-action='animate'>Random Animation</button>
+        <button data-action='stopCurrent'>stop the current action</button>
+        <button data-action='stop'>stop all actions</button>
+        <button data-action='speak' data-args='Hello! Can I help you?'>Say Hello</button>
+        <button data-action='gestureAt' data-args='200,200'>Gesture at a given point (200x200)</button>
+        <button data-action='moveTo' data-args='100,100'>Move to the given point (100x100)</button>
+      </fieldset>
+    </div>
+    <script type="text/javascript">
+      $('#Agent').on('change', function() {
+        var choice = $(this).val();
+        clippy.load({name: choice, path: '../agents/'}, function(agent) {
+          //Build a User Interface for this agent
+          var ui = $('#InputTemplate').clone();
+          ui.removeAttr('id').removeAttr('style');
+          //Wireup list of agent animations
+          agent.animations().forEach(function(animation) {
+            $('[data-action=play]', ui).append("<option>"+animation+"</option>");
+          });
+          //Wire up all simple actions
+          $('button[data-action]', ui).on('click', function() {
+            var input = $(this),
+                action = input.data('action'),
+                args = input.data('args');
+            if(typeof args === 'string') {
+              agent[action].apply(agent, args.split(','));
+            } else {
+              agent[action]();
+            }
+          });
+          $('select[data-action]', ui).on('change', function() {
+            var input = $(this),
+                action = input.data('action'),
+                args = input.val();
+            if(typeof args === 'string') {
+              agent[action].apply(agent, args.split(','));
+            } else {
+              agent[action]();
+            }
+          });
+
+          //Describe set of actions
+          $('[data-field=name]', ui).html(choice);
+          $('body').append(ui);
+          agent.show();
+
+
+        });
+      });
+    </script>
+  </body>
+</html>
