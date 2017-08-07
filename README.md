@@ -31,7 +31,7 @@ Add this code to you to your page to enable Clippy.js.
 
 <!-- Of if you want to define an alternate agent path you can pass a JSON like this -->
 <script type="text/javascript">
-    clippy.load({name:'Clippy', path='/clippy/agents/'}, function(agent){
+    clippy.load({name:'Clippy', path:'/clippy/agents/'}, function(agent){
         // do anything with the loaded agent
         agent.show();
     });
