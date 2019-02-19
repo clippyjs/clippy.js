@@ -1,3 +1,9 @@
+/*
+ * Fork of ClippyJS needed to work with Drupal.org.
+ *
+ * @see https://github.com/mherchel/clippy.js/tree/drupal
+ */
+
 (function ($) {
 
 // Code to help debug Clippy (if necessary)
