@@ -603,10 +603,10 @@ clippy.Animator.prototype = {
     },
 
     _playSound:function () {
-        var s = this._currentFrame.sound;
-        if (!s) return;
-        var audio = this._sounds[s];
-        if (audio) audio.play();
+        // var s = this._currentFrame.sound;
+        // if (!s) return;
+        // var audio = this._sounds[s];
+        // if (audio) audio.play();
     },
 
     _atLastFrame:function () {
