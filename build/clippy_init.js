@@ -212,10 +212,10 @@
     await sleep(5000);
     agent.speak(`Honestly, it's all of these. Anyway it's pretty awesome!`);
     await sleep(10000);
-    agent.speak(`It's completely free open source! Which means it's free to download, and
-      developed by volunteers`);
-    agent.speak(`Are you registered for Drupalcon? Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    agent.speak(`It's completely free open source! Which means it's free to download, and developed by volunteers`);
     await sleep(5000);
+    agent.speak(`Are you registered for Drupalcon? Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    await sleep(10000);
     agent.speak(`Tell them Clippy sent you!`);
     await sleep(5000);
     agent.speak(`Can’t make it to Drupalcon North America? `);
@@ -263,6 +263,10 @@
     agent.animate();
     agent.speak(`Sometimes turning it off and turning it back on again helps 😎`);
     await sleep(15000);
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
+    await sleep(5000);
     agent.speak(`Have you tried clearing the cache?`);
     await sleep(30000);
     agent.speak(`Have you tried clearing the cache?`);
@@ -293,6 +297,10 @@
     await sleep(5000);
     agent.speak(`And while you’re here, look for issues that you might be able to help with. Sometimes asking clarifying questions (such as “what version are you using”) can help!`);
     await sleep(15000);
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
+    await sleep(5000);
     agent.speak(`Have you tried clearing the cache?`);
     await sleep(30000);
     agent.speak(`Have you tried clearing the cache?`);
@@ -330,6 +338,10 @@
     agent.speak(`5) Does the project have documentation? If so, at least one person cares about the project. `);
     await sleep(5000);
     agent.speak(`Good luck!`);
+    await sleep(5000);
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
     await sleep(15000);
     agent.speak(`Have you tried clearing the cache?`);
     await sleep(30000);
@@ -425,6 +437,11 @@
     agent.speak(`Drupalcon Amsterdam is happening in October! `);
     await sleep(5000);
     agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
+    await sleep(5000);
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
+    await sleep(5000);
   }
 
   async function scriptViewCommunity(agent) {
@@ -439,9 +456,9 @@
     agent.speak(`Are you looking to attend an event and meet people in person?`);
     await sleep(5000);
     agent.speak(`Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
-    await sleep(5000);
+    await sleep(8000);
     agent.speak(`Tell them Clippy sent you! I Hope to see you there! I’ll be the only sentient paper-clip attending AFAIK. Come say hi!`);
-    await sleep(5000);
+    await sleep(8000);
     agent.speak(`Can’t make it to Drupalcon North America? `);
     await sleep(5000);
     agent.speak(`Drupalcon Amsterdam is happening in October! `);
@@ -449,8 +466,13 @@
     agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
     await sleep(5000);
     agent.speak(`Can’t make it to either of those? Attend a Drupal Camp! Drupalcamps are like mini-conferences with anywhere from 100-400 people (although some of the big camps get quite larger)`);
-    await sleep(5000);
+    await sleep(10000);
     agent.speak(`You can find a handy-dandy list of camps at https://www.drupical.com. Check it out!`);
+    await sleep(5000);
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
+    await sleep(5000);
   }
 
   async function scriptCatchAll(agent) {
