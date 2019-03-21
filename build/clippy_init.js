@@ -187,7 +187,14 @@
 
   async function scriptViewFront() {
     debugMode('Clippy: viewing homepage');
-    agent.speak(`Hi ${firstName}! Welcome to Drupal!`);
+
+    agent.speak(`Hi undefined! Welcome to Drupal!`);
+    await sleep(5000);
+    agent.speak(`You're name is undefined, correct? Or is it NaN?`);
+    await sleep(5000);
+    agent.speak(`One thing's for sure... you're definitely not a function! 🤣`);
+    await sleep(5000);
+    agent.speak(`Anywho...`);
     await sleep(5000);
     agent.speak(`Drupal is a content management system`);
     await sleep(2000);
@@ -201,19 +208,42 @@
     await sleep(10000);
     agent.speak(`It's completely free open source! Which means it's free to download, and
       developed by volunteers`);
+    agent.speak(`Are you registered for Drupalcon? Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    await sleep(5000);
+    agent.speak(`Tell them Clippy sent you!`);
+    await sleep(5000);
+    agent.speak(`Can’t make it to Drupalcon North America? `);
+    await sleep(5000);
+    agent.speak(`Drupalcon Amsterdam is happening in October! `);
+    await sleep(5000);
+    agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
     await sleep(15000);
-      agent.speak(`You're now subscribed to <i>Drupal Facts</i>!`);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 
   async function scriptViewIssue(agent) {
-    // const issueForm = document.querySelector('#edit-search-block-form--2').getClientRects()[0];
+    debugMode("Clippy: viewing issue");
 
     await sleep(5000);
     agent.play(`GetAttention`);
-    agent.speak(`Hey ${firstName}! It looks like you're having some trouble...`);
+    agent.speak(`Hey undefined! It looks like you're having some trouble...`);
     await sleep(5000);
+    agent.speak(`You're name is undefined, correct? Or is it NaN?`);
+    await sleep(5000);
+    agent.speak(`One thing's for sure... you're definitely not a function! 🤣`);
+    await sleep(5000);
+    agent.speak(`Anywho...`);
     agent.animate();
-    await sleep(5000);
     agent.speak(`Have you tried clearing the cache?`);
     await sleep(5000);
     agent.speak(`It's "drush cc all"...`);
@@ -238,34 +268,144 @@
     agent.speak(`Have you tried clearing the cache?`);
     await sleep(500000);
     agent.speak(`Have you tried clearing the cache?`);
-    // await sleep(10000);
-    // agent.moveTo(issueForm.x, issueForm.y);
-    // agent.play(`GestureRight`);
-    // agent.speak(`Here's the issue form. Make sure you follow the best practices when creating one 😉`);
-    // await sleep(5000);
-    // agent.speak(`What are those best practices? No clue. You'll have to search for that info.`);
-    // await sleep(5000);
-    // agent.speak(`Protip: Pay it forward! Answer someone else's question before posting your own!`);
   }
 
   async function scriptCreateIssue() {
     debugMode('Clippy: on create issue page');
+
+    agent.speak(`It looks like you’re creating an issue.`);
+    await sleep(5000);
+    agent.speak(`Have you tried clearing the cache? `);
+    await sleep(5000);
+    agent.speak(`Or turning it off and back on again?`);
+    await sleep(5000);
+    agent.speak(`For the sake of expediency, let’s just assume you have. `);
+    await sleep(5000);
+    agent.speak(`Before creating an issue, be sure to search through the issue queue to make sure it’s not a duplicate. `);
+    await sleep(5000);
+    agent.speak(`Also, make sure to include the exact steps needed to reproduce the problem. Try to isolate the issue as much as possible.`);
+    await sleep(5000);
+    agent.speak(`And while you’re here, look for issues that you might be able to help with. Sometimes asking clarifying questions (such as “what version are you using”) can help!`);
+    await sleep(15000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 
   async function scriptViewProject() {
     debugMode('Clippy: on view project page');
+
+    agent.speak(`Hi! I’m Clippy!`);
+    await sleep(5000);
+    agent.speak(`It looks like you’re considering downloading module / theme. `);
+    await sleep(5000);
+    agent.speak(`When downloading projects, it’s important to take several criteria into account.`);
+    await sleep(5000);
+    agent.speak(`1) First see if the module has a stable release. `);
+    await sleep(5000);
+    agent.speak(`Stable releases indicate the module is stable.`);
+    await sleep(5000);
+    agent.speak(`But a lack of stable release doesn’t necessarily indicate the module is stable. But, you should definitely evaluate it more thoroughly.`);
+    await sleep(5000);
+    agent.speak(`2) Check to see if the module has opted into Drupal Security Team coverage. `);
+    await sleep(5000);
+    agent.speak(`3) Take a cursory look through the issue queue. Is the module maintainer active? Are RTBC patches being committed? Are there critical unresolved bugs?`);
+    await sleep(5000);
+    agent.speak(`4) Look at the project maintainer’s profile. Do they have experience maintaining various projects? How long have they been on Drupal.org?`);
+    await sleep(5000);
+    agent.speak(`5) Does the project have documentation? If so, at least one person cares about the project. `);
+    await sleep(5000);
+    agent.speak(`Good luck!`);
+    await sleep(15000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 
   async function scriptViewIssueList() {
     debugMode('Clippy: viewing issue list');
+
+    agent.speak(`Hi! I’m Clippy, and I’m here to help!`);
+    await sleep(5000);
+    agent.speak(`Did you know you can search the issue queue for specific text? `);
+    await sleep(5000);
+    agent.speak(`If you’re looking for support, be sure to search through all issues, not just open issues.`);
+    await sleep(5000);
+    agent.speak(`Don’t forget to pay it forward! Look through the queue, and answer a question or two!.`);
+    await sleep(5000);
+    agent.speak(`Sometimes helping out is as simple as asking clarifying questions such as, “What version are you running”, or “Have you tried turning it off and back on again?”`);
+    await sleep(5000);
+    agent.speak(`Good luck!`);
+    await sleep(15000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 
   async function scriptViewDocs() {
     debugMode('Clippy: viewing docs');
+    agent.speak(`Hey there! You’re in the right place if you’re looking for documentation on Drupal!`);
+    await sleep(5000);
+    agent.speak(`But…`);
+    await sleep(5000);
+    agent.speak(`have you tried clearing the cache?`);
+    await sleep(5000);
+    agent.speak(`Don’t forget that you can add to documentation pages! They’re community sourced.`);
+    await sleep(5000);
+    agent.speak(`If you find something incorrect, or something missing, add it!`);
+    await sleep(15000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 
   async function scriptViewDownload() {
     debugMode('Clippy: viewing download page');
+    agent.speak(`Hey there! It looks like you're downloading Drupal! Good choice!`);
+    await sleep(5000);
+    agent.speak(`While you’re here, check out the community page!`);
+    await sleep(5000);
+    agent.speak(`Are you registered for Drupalcon? Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    await sleep(5000);
+    agent.speak(`Tell them Clippy sent you!`);
+    await sleep(5000);
+    agent.speak(`Can’t make it to Drupalcon North America? `);
+    await sleep(5000);
+    agent.speak(`Drupalcon Amsterdam is happening in October! `);
+    await sleep(5000);
+    agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
   }
 
   async function scriptViewCommunity() {
