@@ -136,10 +136,6 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  // var uid = 'uid' in Drupal.settings.clippy ? Drupal.settings.clippy.uid : false;
-  var firstName = 'first_name' in Drupal.settings.clippy ? Drupal.settings.clippy.first_name : '';
-
-
   /*
    * This is where we keep the logic to tell Clippy what to do, and when to do it.
    */
@@ -163,7 +159,7 @@
       // Viewing a module/theme
       scriptViewProject(agent);
     }
-    else if (body.classList.contains('list of issues')) {
+    else if (body.classList.contains('page-project-issues')) {
       // Viewing list of issues
       scriptViewIssueList(agent);
     }
@@ -185,7 +181,7 @@
     }
   }
 
-  async function scriptViewFront() {
+  async function scriptViewFront(agent) {
     debugMode('Clippy: viewing homepage');
 
     agent.speak(`Hi undefined! Welcome to Drupal!`);
@@ -232,7 +228,7 @@
   }
 
   async function scriptViewIssue(agent) {
-    debugMode("Clippy: viewing issue");
+    debugMode('Clippy: viewing issue');
 
     await sleep(5000);
     agent.play(`GetAttention`);
@@ -270,7 +266,7 @@
     agent.speak(`Have you tried clearing the cache?`);
   }
 
-  async function scriptCreateIssue() {
+  async function scriptCreateIssue(agent) {
     debugMode('Clippy: on create issue page');
 
     agent.speak(`It looks like you’re creating an issue.`);
@@ -300,7 +296,7 @@
     agent.speak(`Have you tried clearing the cache?`);
   }
 
-  async function scriptViewProject() {
+  async function scriptViewProject(agent) {
     debugMode('Clippy: on view project page');
 
     agent.speak(`Hi! I’m Clippy!`);
@@ -338,7 +334,7 @@
     agent.speak(`Have you tried clearing the cache?`);
   }
 
-  async function scriptViewIssueList() {
+  async function scriptViewIssueList(agent) {
     debugMode('Clippy: viewing issue list');
 
     agent.speak(`Hi! I’m Clippy, and I’m here to help!`);
@@ -366,8 +362,9 @@
     agent.speak(`Have you tried clearing the cache?`);
   }
 
-  async function scriptViewDocs() {
+  async function scriptViewDocs(agent) {
     debugMode('Clippy: viewing docs');
+
     agent.speak(`Hey there! You’re in the right place if you’re looking for documentation on Drupal!`);
     await sleep(5000);
     agent.speak(`But…`);
@@ -391,7 +388,7 @@
     agent.speak(`Have you tried clearing the cache?`);
   }
 
-  async function scriptViewDownload() {
+  async function scriptViewDownload(agent) {
     debugMode('Clippy: viewing download page');
     agent.speak(`Hey there! It looks like you're downloading Drupal! Good choice!`);
     await sleep(5000);
@@ -408,11 +405,11 @@
     agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
   }
 
-  async function scriptViewCommunity() {
+  async function scriptViewCommunity(agent) {
     debugMode('Clippy: viewing community pages');
   }
 
-  async function scriptCatchAll() {
+  async function scriptCatchAll(agent) {
     debugMode('Clippy: Catch-all script');
   }
 })();
