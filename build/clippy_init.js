@@ -136,6 +136,16 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // Helper function to move Clippy around.
+  function moveClippyTo(agent, selector) {
+    el = document.querySelector(selector);
+    elRect = el.getBoundingClientRect();
+
+    if (elRect !== undefined) {
+      agent.moveTo(elRect.x, elRect.y);
+    }
+  }
+
   /*
    * This is where we keep the logic to tell Clippy what to do, and when to do it.
    */
@@ -340,12 +350,24 @@
     agent.speak(`Hi! I’m Clippy, and I’m here to help!`);
     await sleep(5000);
     agent.speak(`Did you know you can search the issue queue for specific text? `);
+    moveClippyTo(agent, '#edit-text');
     await sleep(5000);
     agent.speak(`If you’re looking for support, be sure to search through all issues, not just open issues.`);
+    moveClippyTo(agent, '#block-system-user-menu');
     await sleep(5000);
     agent.speak(`Don’t forget to pay it forward! Look through the queue, and answer a question or two!.`);
     await sleep(5000);
     agent.speak(`Sometimes helping out is as simple as asking clarifying questions such as, “What version are you running”, or “Have you tried turning it off and back on again?”`);
+    await sleep(10000);
+    agent.speak(`Anywho...`);
+    agent.animate();
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(5000);
+    agent.speak(`It's "drush cc all"...`);
+    await sleep(2000);
+    agent.speak(`Wait! I mean "drush cr"`);
+    await sleep(2000);
+    agent.speak(`...or is it "drupal cr"?`);
     await sleep(5000);
     agent.speak(`Good luck!`);
     await sleep(15000);
@@ -407,9 +429,65 @@
 
   async function scriptViewCommunity(agent) {
     debugMode('Clippy: viewing community pages');
+
+    agent.speak(`Welcome to the Drupal community homepage!`);
+    await sleep(5000);
+    agent.speak(`We’re an inclusive, vibrant, and diverse community of free open source software enthusiasts from around the world!`);
+    await sleep(5000);
+    agent.speak(`We welcome everyone! 💙 💚 💛 💜 ❤️ 🖤`);
+    await sleep(5000);
+    agent.speak(`Are you looking to attend an event and meet people in person?`);
+    await sleep(5000);
+    agent.speak(`Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    await sleep(5000);
+    agent.speak(`Tell them Clippy sent you! I Hope to see you there! I’ll be the only sentient paper-clip attending AFAIK. Come say hi!`);
+    await sleep(5000);
+    agent.speak(`Can’t make it to Drupalcon North America? `);
+    await sleep(5000);
+    agent.speak(`Drupalcon Amsterdam is happening in October! `);
+    await sleep(5000);
+    agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
+    await sleep(5000);
+    agent.speak(`Can’t make it to either of those? Attend a Drupal Camp! Drupalcamps are like mini-conferences with anywhere from 100-400 people (although some of the big camps get quite larger)`);
+    await sleep(5000);
+    agent.speak(`You can find a handy-dandy list of camps at https://www.drupical.com. Check it out!`);
   }
 
   async function scriptCatchAll(agent) {
     debugMode('Clippy: Catch-all script');
+
+    agent.speak(`PHP Fatal error: Call to undefined function drupal_load_clippy() in /var/www/dev/drupal.org/htdocs/sites/all/modules/clippy-js/build on line 45`);
+    await sleep(5000);
+    agent.speak(`Kidding! Did I get ya? 🤣`);
+    await sleep(5000);
+    agent.speak(`Anywho… Hi! I’m Clippy, and I’m here to help!`);
+    await sleep(5000);
+    agent.speak(`Have you tried clearing the cache? `);
+    await sleep(5000);
+    agent.speak(`While you’re here, check out the community page!`);
+    await sleep(5000);
+    agent.speak(`Are you registered for Drupalcon? Drupalcon is coming up in only one week in Seattle! You can register at https://events.drupal.org/seattle2019`);
+    await sleep(5000);
+    agent.speak(`Tell them Clippy sent you!`);
+    await sleep(5000);
+    agent.speak(`Can’t make it to Drupalcon North America? `);
+    await sleep(5000);
+    agent.speak(`Drupalcon Amsterdam is happening in October! `);
+    await sleep(5000);
+    agent.speak(`Learn all about it at https://events.drupal.org/amsterdam2019`);
+    await sleep(5000);
+    agent.speak(`Hope to see you there! I’ll be the only sentient paper-clip attending AFAIK. Come say hi!`);
+    await sleep(15000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(30000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(60000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(120000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(240000);
+    agent.speak(`Have you tried clearing the cache?`);
+    await sleep(500000);
+    agent.speak(`Have you tried clearing the cache?`);
   }
 })();
