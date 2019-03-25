@@ -31,7 +31,7 @@
     };
 
     // Download jQuery 1.7. This overwrites the window.jQuery namespace.
-    jQuery.getScript('/sites/all/libraries/clippy-js/build/jquery-1.7.2.min.js', function() {
+    jQuery.getScript('/sites/all/libraries/clippy.js/build/jquery-1.7.2.min.js', function() {
 
       // Once the new version of jQuery is downloaded. Move it over to jQueryNew, and restore the original.
       window.jQueryNew = window.jQuery;
@@ -43,7 +43,7 @@
       };
 
       // Load the Clippy script and then instantiate it! 😎
-      jQueryNew.getScript('/sites/all/libraries/clippy-js/build/clippy.js', function() {
+      jQueryNew.getScript('/sites/all/libraries/clippy.js/build/clippy.js', function() {
         clippy.load('Clippy', runClippyRun);
         debugMode('Final global jQuery version: ' + window.jQuery.fn.jquery);
       });
