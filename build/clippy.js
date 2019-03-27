@@ -19,7 +19,7 @@ var clippy = {};
  *
  * @constructor
  */
-clippy.Agent = function (path, data, sounds) {
+clippy.Agent = function (path, data) {
     this.path = path;
 
     this._queue = new clippy.Queue($.proxy(this._onQueueEmpty, this));
@@ -28,7 +28,7 @@ clippy.Agent = function (path, data, sounds) {
 
     $(document.body).append(this._el);
 
-    this._animator = new clippy.Animator(this._el, path, data, sounds);
+    this._animator = new clippy.Animator(this._el, path, data);
 
     this._balloon = new clippy.Balloon(this._el);
 
@@ -477,7 +477,7 @@ clippy.Agent.prototype = {
  *
  * @constructor
  */
-clippy.Animator = function (el, path, data, sounds) {
+clippy.Animator = function (el, path, data) {
     this._el = el;
     this._data = data;
     this._path = path;
@@ -487,9 +487,9 @@ clippy.Animator = function (el, path, data, sounds) {
     this._currentAnimation = undefined;
     this._endCallback = undefined;
     this._started = false;
-    this._sounds = {};
+    // this._sounds = {};
     this.currentAnimationName = undefined;
-    this.preloadSounds(sounds);
+    // this.preloadSounds(sounds);
     this._overlays = [this._el];
     var curr = this._el;
 
@@ -524,13 +524,13 @@ clippy.Animator.prototype = {
 
     preloadSounds:function (sounds) {
 
-        for (var i = 0; i < this._data.sounds.length; i++) {
-            var snd = this._data.sounds[i];
-            var uri = sounds[snd];
-            if (!uri) continue;
-            this._sounds[snd] = new Audio(uri);
+        // for (var i = 0; i < this._data.sounds.length; i++) {
+        //     var snd = this._data.sounds[i];
+        //     var uri = sounds[snd];
+        //     if (!uri) continue;
+        //     this._sounds[snd] = new Audio(uri);
 
-        }
+        // }
     },
     hasAnimation:function (name) {
         return !!this._data.animations[name];
@@ -631,7 +631,7 @@ clippy.Animator.prototype = {
         }
 
         this._draw();
-        this._playSound();
+        // this._playSound();
 
         this._loop = window.setTimeout($.proxy(this._step, this), this._currentFrame.duration);
 
@@ -865,26 +865,26 @@ clippy.load = function (name, successCb, failCb) {
 
     var mapDfd = clippy.load._loadMap(path);
     var agentDfd = clippy.load._loadAgent(name, path);
-    var soundsDfd = clippy.load._loadSounds(name, path);
+    // var soundsDfd = clippy.load._loadSounds(name, path);
 
     var data;
     agentDfd.done(function (d) {
         data = d;
     });
 
-    var sounds;
+    // var sounds;
 
-    soundsDfd.done(function (d) {
-        sounds = d;
-    });
+    // soundsDfd.done(function (d) {
+    //     sounds = d;
+    // });
 
     // wrapper to the success callback
     var cb = function () {
-        var a = new clippy.Agent(path, data,sounds);
+        var a = new clippy.Agent(path, data, null);
         successCb(a);
     };
 
-    $.when(mapDfd, agentDfd, soundsDfd).done(cb).fail(failCb);
+    $.when(mapDfd, agentDfd).done(cb).fail(failCb);
 };
 
 clippy.load._maps = {};
@@ -907,28 +907,28 @@ clippy.load._loadMap = function (path) {
     return dfd.promise();
 };
 
-clippy.load._sounds = {};
+// clippy.load._sounds = {};
 
 clippy.load._loadSounds = function (name, path) {
-    var dfd = clippy.load._sounds[name];
-    if (dfd) return dfd;
+    // var dfd = clippy.load._sounds[name];
+    // if (dfd) return dfd;
 
-    // set dfd if not defined
-    dfd = clippy.load._sounds[name] = $.Deferred();
+    // // set dfd if not defined
+    // dfd = clippy.load._sounds[name] = $.Deferred();
 
-    var audio = document.createElement('audio');
-    var canPlayMp3 = !!audio.canPlayType && "" != audio.canPlayType('audio/mpeg');
-    var canPlayOgg = !!audio.canPlayType && "" != audio.canPlayType('audio/ogg; codecs="vorbis"');
+    // var audio = document.createElement('audio');
+    // var canPlayMp3 = !!audio.canPlayType && "" != audio.canPlayType('audio/mpeg');
+    // var canPlayOgg = !!audio.canPlayType && "" != audio.canPlayType('audio/ogg; codecs="vorbis"');
 
-    if (!canPlayMp3 && !canPlayOgg) {
-        dfd.resolve({});
-    } else {
-        var src = path + (canPlayMp3 ? '/sounds-mp3.js' : '/sounds-ogg.js');
-        // load
-        clippy.load._loadScript(src);
-    }
+    // if (!canPlayMp3 && !canPlayOgg) {
+    //     dfd.resolve({});
+    // } else {
+    //     var src = path + (canPlayMp3 ? '/sounds-mp3.js' : '/sounds-ogg.js');
+    //     // load
+    //     clippy.load._loadScript(src);
+    // }
 
-    return dfd.promise()
+    // return dfd.promise()
 };
 
 
@@ -969,12 +969,11 @@ clippy.ready = function (name, data) {
 };
 
 clippy.soundsReady = function (name, data) {
-    var dfd = clippy.load._sounds[name];
-    if (!dfd) {
-        dfd = clippy.load._sounds[name] = $.Deferred();
-    }
-
-    dfd.resolve(data);
+    // var dfd = clippy.load._sounds[name];
+    // if (!dfd) {
+    //     dfd = clippy.load._sounds[name] = $.Deferred();
+    // }
+    // dfd.resolve(data);
 };
 
 /******
