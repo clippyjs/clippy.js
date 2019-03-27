@@ -43,6 +43,7 @@
       };
 
       // Load the Clippy script and then instantiate it! 😎
+      jQueryNew.ajaxSetup({ cache: true });
       jQueryNew.getScript('/sites/all/libraries/clippy.js/build/clippy.js', function() {
         clippy.load('Clippy', runClippyRun);
         debugMode('Final global jQuery version: ' + window.jQuery.fn.jquery);
