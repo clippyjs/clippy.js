@@ -65,8 +65,19 @@
       isAsyncSupported = false;
     }
 
+    // Look for a querystring to disable clippy.
+    var clippyQuerystring = (new URL(document.location)).searchParams;
+    if (clippyQuerystring.get('noclippy') != null) {
+      disableClippy();
+    }
+
     if (!isAsyncSupported) {
       debugMode('This browser doesn\'t support async/await.');
+      return false;
+    }
+
+    if (clippyDisabled()) {
+      debugMode('Clippy is disabled.');
       return false;
     }
 
@@ -115,6 +126,14 @@
   function alwaysShowClippy() {
     var urlSearchParams = (new URL(document.location)).searchParams;
     return urlSearchParams.get('showmesomeclippy') != null;
+  }
+
+  function clippyDisabled() {
+    return localStorage.getItem(noClippy) == 'noClippy';
+  }
+
+  function disableClippy() {
+    localStorage.setItem('noClippy', 'noClippy');
   }
 
   /*
