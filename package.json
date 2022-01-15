@@ -7,9 +7,6 @@
   "types": "dist/types.d.ts",
   "repository": "git@github.com:smore-inc/clippy.js.git",
   "author": "Shlomi Atar <shlomiatar@gmail.com>",
-  "contributors": [
-    "Halvard Mørstad <halvard@simplyundoable.com>"
-  ],
   "license": "MIT",
   "files": [
     "dist/*"
