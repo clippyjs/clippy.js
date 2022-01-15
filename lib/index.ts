@@ -2,6 +2,8 @@ import { Agents, getAgent } from "./agents";
 import { Agent } from "./agent";
 import "./clippy.css";
 
+export { Agents };
+
 export type ClippyOptions = {
   debug?: boolean
 }
