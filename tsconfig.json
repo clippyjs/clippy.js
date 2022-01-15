@@ -5,6 +5,7 @@
     "strict": true,
     "allowJs": true,
     "checkJs": true,
+    "sourceMap": true,
     "outDir": "dist",
     "moduleResolution": "node",
     "jsx": "react-jsx",
