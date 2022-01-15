@@ -1,12 +1,15 @@
 {
   "name": "clippy.js",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "source": "lib/index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
-  "repository": "git@github.com:halvardssm/clippy.js.git",
-  "author": "Halvard Mørstad <halvard@simplyundoable.com>",
+  "repository": "git@github.com:smore-inc/clippy.js.git",
+  "author": "Shlomi Atar <shlomiatar@gmail.com>",
+  "contributors": [
+    "Halvard Mørstad <halvard@simplyundoable.com>"
+  ],
   "license": "MIT",
   "files": [
     "dist/*"
