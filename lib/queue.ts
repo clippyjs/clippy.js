@@ -1,50 +1,47 @@
-/******
- * Tiny Queue
- *
- * @constructor
- */
-clippy.Queue = function (onEmptyCallback) {
+export type VoidFn = () => void
+export type VoidCbFn = (cb: VoidFn) => void
+
+export class Queue {
+  private _queue: Array<VoidCbFn>;
+  private readonly _onEmptyCallback: VoidFn;
+  private _active = false;
+
+  constructor(onEmptyCallback: Queue["_onEmptyCallback"]) {
     this._queue = [];
     this._onEmptyCallback = onEmptyCallback;
-};
+  };
 
-clippy.Queue.prototype = {
-    /***
-     *
-     * @param {function(Function)} func
-     * @returns {jQuery.Deferred}
-     */
-    queue:function (func) {
-        this._queue.push(func);
+  queue(func: VoidCbFn) {
+    this._queue.push(func);
 
-        if (this._queue.length === 1 && !this._active) {
-            this._progressQueue();
-        }
-    },
-
-    _progressQueue:function () {
-
-        // stop if nothing left in queue
-        if (!this._queue.length) {
-            this._onEmptyCallback();
-            return;
-        }
-
-        var f = this._queue.shift();
-        this._active = true;
-
-        // execute function
-        var completeFunction = $.proxy(this.next, this);
-        f(completeFunction);
-    },
-
-    clear:function () {
-        this._queue = [];
-    },
-
-    next:function () {
-        this._active = false;
-        this._progressQueue();
+    if (this._queue.length === 1 && !this._active) {
+      this._progressQueue();
     }
-};
+  }
 
+  _progressQueue() {
+    // stop if nothing left in queue
+    if (!this._queue.length) {
+      this._onEmptyCallback();
+      return;
+    }
+
+    const f = this._queue.shift();
+    if (f) {
+      this._active = true;
+
+      // execute function
+      const completeFunction = this.next.bind(this);
+      f(completeFunction);
+    }
+  }
+
+  clear() {
+    this._queue = [];
+  }
+
+  next() {
+    this._active = false;
+    this._progressQueue();
+  }
+}
