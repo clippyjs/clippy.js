@@ -1,5 +1,5 @@
 import * as ReactDOM from "react-dom";
-import { initiateClippy } from "clippy";
+import { initiateClippy } from "../lib";
 import { useEffect } from "react";
 
 export function App() {
