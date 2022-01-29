@@ -387,6 +387,7 @@ export class Agent {
     const { top, left } = this._calculateClickOffset(e);
     this._offsetTop = top;
     this._offsetLeft = left;
+    this._dragMove(e);
 
     const mouseMoveListener = this._dragMove.bind(this);
     const mouseUpListener = () => {
