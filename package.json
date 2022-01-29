@@ -27,6 +27,6 @@
     "watch": "parcel watch",
     "build": "rimraf dist && parcel build",
     "prepack": "yarn build",
-    "prettier": "prettier --write \"lib/**/*.ts\""
+    "prettier": "prettier --write \"lib/**/*.{ts,css}\""
   }
 }
