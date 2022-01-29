@@ -1,11 +1,15 @@
-import { AgentAnimationFramesType, AgentAnimationType, AgentType } from "./agent";
+import {
+  AgentAnimationFramesType,
+  AgentAnimationType,
+  AgentType,
+} from "./agent";
 import { AgentsWithAudioType } from "./agents";
 
-export type AnimatorSoundType = Record<string, string>
+export type AnimatorSoundType = Record<string, string>;
 
 export enum AnimatorStates {
   EXITED,
-  WAITING
+  WAITING,
 }
 
 export class Animator {
@@ -17,7 +21,9 @@ export class Animator {
   private _currentFrame: AgentAnimationFramesType | null = null;
   private _exiting = false;
   private _currentAnimation: AgentAnimationType | undefined = undefined;
-  private _endCallback: ((currentAnimationName: string, state: number) => void) | undefined = undefined;
+  private _endCallback:
+    | ((currentAnimationName: string, state: number) => void)
+    | undefined = undefined;
   private _started = false;
   private _sounds: Record<string, HTMLAudioElement> = {};
   private _overlays: HTMLDivElement[];
@@ -40,7 +46,7 @@ export class Animator {
       this._overlays.push(inner);
       curr = inner;
     }
-  };
+  }
 
   animations() {
     const r: string[] = [];
@@ -67,7 +73,10 @@ export class Animator {
     this._exiting = true;
   }
 
-  showAnimation(animationName: string, stateChangeCallback: Animator["_endCallback"]) {
+  showAnimation(
+    animationName: string,
+    stateChangeCallback: Animator["_endCallback"]
+  ) {
     this._exiting = false;
 
     if (!this.hasAnimation(animationName)) {
@@ -103,9 +112,9 @@ export class Animator {
     const frameSize = this._data.framesize;
 
     el.style.display = "none";
-    el.style.width = `${ frameSize[0] }px`;
-    el.style.height = `${ frameSize[1] }px`;
-    el.style.background = `url('${ mapUrl.toString() }') no-repeat`;
+    el.style.width = `${frameSize[0]}px`;
+    el.style.height = `${frameSize[1]}px`;
+    el.style.background = `url('${mapUrl.toString()}') no-repeat`;
 
     return el;
   }
@@ -117,13 +126,12 @@ export class Animator {
     for (let i = 0; i < this._overlays.length; i++) {
       if (i < images.length) {
         const xy = images[i];
-        const bg = `${ -xy[0] }px ${ -xy[1] }px`;
+        const bg = `${-xy[0]}px ${-xy[1]}px`;
         this._overlays[i].style.display = "block";
         this._overlays[i].style.backgroundPosition = bg;
       } else {
         this._overlays[i].style.display = "none";
       }
-
     }
   }
 
@@ -159,26 +167,36 @@ export class Animator {
 
   private _atLastFrame() {
     if (this._currentAnimation) {
-      return this._currentFrameIndex >= this._currentAnimation.frames.length - 1;
+      return (
+        this._currentFrameIndex >= this._currentAnimation.frames.length - 1
+      );
     }
     return true;
   }
 
   private _step() {
     if (!this._currentAnimation || !this.currentAnimationName) return;
-    const newFrameIndex = Math.min(this._getNextAnimationFrame(), this._currentAnimation.frames.length - 1);
-    const frameChanged = !this._currentFrame || this._currentFrameIndex !== newFrameIndex;
+    const newFrameIndex = Math.min(
+      this._getNextAnimationFrame(),
+      this._currentAnimation.frames.length - 1
+    );
+    const frameChanged =
+      !this._currentFrame || this._currentFrameIndex !== newFrameIndex;
     this._currentFrameIndex = newFrameIndex;
 
     // always switch frame data, unless we're at the last frame of an animation with a useExitBranching flag.
     if (!(this._atLastFrame() && this._currentAnimation.useExitBranching)) {
-      this._currentFrame = this._currentAnimation.frames[this._currentFrameIndex];
+      this._currentFrame =
+        this._currentAnimation.frames[this._currentFrameIndex];
     }
 
     this._draw();
     this._playSound();
 
-    this._loop = window.setTimeout(this._step.bind(this), this._currentFrame?.duration);
+    this._loop = window.setTimeout(
+      this._step.bind(this),
+      this._currentFrame?.duration
+    );
 
     // fire events if the frames changed, and we reached an end
     if (this._endCallback && frameChanged && this._atLastFrame()) {

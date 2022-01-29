@@ -11,26 +11,29 @@ export enum Agents {
   Merlin = "Merlin",
   Peedy = "Peedy",
   Rocky = "Rocky",
-  Rover = "Rover"
+  Rover = "Rover",
 }
 
 export type AgentsType = {
-  name: string
-  agent: AgentType
-  soundsMp3: AnimatorSoundType,
-  soundsOgg: AnimatorSoundType,
-  map: URL
-}
+  name: string;
+  agent: AgentType;
+  soundsMp3: AnimatorSoundType;
+  soundsOgg: AnimatorSoundType;
+  map: URL;
+};
 
-export type AgentsWithAudioType = AgentsType & { audio: AnimatorSoundType }
+export type AgentsWithAudioType = AgentsType & { audio: AnimatorSoundType };
 
-export async function getAgent(agent: Agents) {
+export async function getAgent(agent: Agents | keyof typeof Agents) {
   const { default: a } = await agentImporter(agent);
 
   const result: Partial<AgentsWithAudioType> = { ...a };
   const audio = document.createElement("audio");
-  const canPlayMp3 = !!audio.canPlayType && "" != audio.canPlayType("audio/mpeg");
-  const canPlayOgg = !!audio.canPlayType && "" != audio.canPlayType("audio/ogg; codecs=\"vorbis\"");
+  const canPlayMp3 =
+    !!audio.canPlayType && "" != audio.canPlayType("audio/mpeg");
+  const canPlayOgg =
+    !!audio.canPlayType &&
+    "" != audio.canPlayType('audio/ogg; codecs="vorbis"');
 
   if (canPlayMp3) {
     result.audio = result.soundsMp3;
@@ -43,7 +46,7 @@ export async function getAgent(agent: Agents) {
   return result as AgentsWithAudioType;
 }
 
-function agentImporter(agent: Agents) {
+function agentImporter(agent: Agents | keyof typeof Agents) {
   switch (agent) {
     case Agents.Bonzi:
       return import("./Bonzi");
@@ -66,7 +69,6 @@ function agentImporter(agent: Agents) {
     case Agents.Rover:
       return import("./Rover");
     default:
-      throw new Error(`Agent '${ agent }' does not exist`);
+      throw new Error(`Agent '${agent}' does not exist`);
   }
 }
-

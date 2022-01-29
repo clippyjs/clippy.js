@@ -8,10 +8,6 @@ const data: AgentsType = {
   agent,
   soundsMp3,
   soundsOgg,
-  map: new URL(
-    "map.png",
-    import.meta.url,
-  ),
+  map: new URL("map.png", import.meta.url),
 };
 export default data;
-

@@ -17,6 +17,7 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "parcel": "^2.2.0",
+    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "typescript": "^4.5.4"
@@ -25,6 +26,7 @@
     "start": "parcel src/index.html",
     "watch": "parcel watch",
     "build": "rimraf dist && parcel build",
-    "prepack": "yarn build"
+    "prepack": "yarn build",
+    "prettier": "prettier --write \"lib/**/*.ts\""
   }
 }

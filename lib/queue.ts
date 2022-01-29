@@ -1,5 +1,5 @@
-export type VoidFn = () => void
-export type VoidCbFn = (cb: VoidFn) => void
+export type VoidFn = () => void;
+export type VoidCbFn = (cb: VoidFn) => void;
 
 export class Queue {
   private _queue: Array<VoidCbFn>;
@@ -9,7 +9,7 @@ export class Queue {
   constructor(onEmptyCallback: Queue["_onEmptyCallback"]) {
     this._queue = [];
     this._onEmptyCallback = onEmptyCallback;
-  };
+  }
 
   queue(func: VoidCbFn) {
     this._queue.push(func);

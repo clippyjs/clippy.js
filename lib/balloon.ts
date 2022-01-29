@@ -4,7 +4,7 @@ export enum Sides {
   TopLeft,
   TopRight,
   BottomLeft,
-  BottomRight
+  BottomRight,
 }
 
 export class Balloon {
@@ -78,7 +78,10 @@ export class Balloon {
       return;
     }
 
-    this._hiding = window.setTimeout(this._finishHideBalloon.bind(this), Balloon.CLOSE_BALLOON_DELAY);
+    this._hiding = window.setTimeout(
+      this._finishHideBalloon.bind(this),
+      Balloon.CLOSE_BALLOON_DELAY
+    );
   }
 
   close() {
@@ -101,19 +104,31 @@ export class Balloon {
     if (this._addWord) {
       this._addWord();
     } else if (!this._hold && !this._hidden) {
-      this._hiding = window.setTimeout(this._finishHideBalloon.bind(this), Balloon.CLOSE_BALLOON_DELAY);
+      this._hiding = window.setTimeout(
+        this._finishHideBalloon.bind(this),
+        Balloon.CLOSE_BALLOON_DELAY
+      );
     }
   }
 
   private _position(side: Sides) {
     const o = this._targetEl.getBoundingClientRect();
-    const h = parseFloat(getComputedStyle(this._targetEl, null).height.replace("px", ""));
-    const w = parseFloat(getComputedStyle(this._targetEl, null).width.replace("px", ""));
+    const h = parseFloat(
+      getComputedStyle(this._targetEl, null).height.replace("px", "")
+    );
+    const w = parseFloat(
+      getComputedStyle(this._targetEl, null).width.replace("px", "")
+    );
 
     const bH = this._balloon.offsetHeight;
     const bW = this._balloon.offsetWidth;
 
-    this._balloon.classList.remove("clippy-top-left", "clippy-top-right", "clippy-bottom-right", "clippy-bottom-left");
+    this._balloon.classList.remove(
+      "clippy-top-left",
+      "clippy-top-right",
+      "clippy-bottom-right",
+      "clippy-bottom-left"
+    );
 
     let left: number, top: number;
     switch (side) {
@@ -139,8 +154,8 @@ export class Balloon {
         break;
     }
 
-    this._balloon.style.top = `${ top }px`;
-    this._balloon.style.left = `${ left }px`;
+    this._balloon.style.top = `${top}px`;
+    this._balloon.style.left = `${left}px`;
     this._balloon.classList.add("clippy-" + side);
   }
 
@@ -153,7 +168,7 @@ export class Balloon {
 
     const m = 5;
     if (o.top - m < 0 || o.left - m < 0) return true;
-    if ((o.top + bH + m) > wH || (o.left + bW + m) > wW) return true;
+    if (o.top + bH + m > wH || o.left + bW + m > wW) return true;
 
     return false;
   }
@@ -182,7 +197,9 @@ export class Balloon {
           this.hide();
         }
       } else {
-        this._content.replaceChildren(document.createTextNode(words.slice(0, idx).join(" ")));
+        this._content.replaceChildren(
+          document.createTextNode(words.slice(0, idx).join(" "))
+        );
         idx++;
         this._loop = window.setTimeout(addWord.bind(this), time);
       }

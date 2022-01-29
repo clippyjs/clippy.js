@@ -1,6 +1,6 @@
-import { Queue, VoidCbFn, VoidFn } from "./Queue";
-import { Animator, AnimatorStates } from "./Animator";
-import { Balloon } from "./Balloon";
+import { Queue, VoidCbFn, VoidFn } from "./queue";
+import { Animator, AnimatorStates } from "./animator";
+import { Balloon } from "./balloon";
 import { AgentsWithAudioType } from "./agents";
 import { Debugger, getDebugger } from "./utils";
 
@@ -9,32 +9,32 @@ export enum Direction {
   Up = "Up",
   Left = "Left",
   Down = "Down",
-  Top = "Top"
+  Top = "Top",
 }
 
 export type AgentAnimationFramesType = {
-  duration: number
-  images?: Array<[number, number]>
-  sound?: string
-  exitBranch?: number,
+  duration: number;
+  images?: Array<[number, number]>;
+  sound?: string;
+  exitBranch?: number;
   branching?: {
-    "branches": { "frameIndex": number, "weight": number }[]
-  }
-}
+    branches: { frameIndex: number; weight: number }[];
+  };
+};
 export type AgentAnimationType = {
-  frames: AgentAnimationFramesType[]
-  useExitBranching?: boolean
-}
+  frames: AgentAnimationFramesType[];
+  useExitBranching?: boolean;
+};
 export type AgentType = {
-  overlayCount: number
-  sounds: string[]
-  framesize: [number, number]
-  animations: Record<string, AgentAnimationType>
-}
+  overlayCount: number;
+  sounds: string[];
+  framesize: [number, number];
+  animations: Record<string, AgentAnimationType>;
+};
 
 export type AgentOptions = {
-  debug?: boolean
-}
+  debug?: boolean;
+};
 
 export class Agent {
   private readonly _el: HTMLDivElement;
@@ -104,8 +104,8 @@ export class Agent {
     this._addToQueue((complete) => {
       // the simple case
       if (duration === 0) {
-        this._el.style.top = `${ y }px`;
-        this._el.style.left = `${ x }px`;
+        this._el.style.top = `${y}px`;
+        this._el.style.left = `${x}px`;
         this.reposition();
         complete();
         return;
@@ -129,14 +129,16 @@ export class Agent {
             this._animator.exitAnimation();
           });
         }
-
       };
 
       this._playInternal(anim, callback.bind(this));
     }, this);
   }
 
-  private _playInternal(animation: string, callback: (currentAnimationName: string, state: number) => void) {
+  private _playInternal(
+    animation: string,
+    callback: (currentAnimationName: string, state: number) => void
+  ) {
     // if we're inside an idle animation,
     if (this._isIdleAnimation() && this._idleIsPending) {
       this._idleComplete = () => {
@@ -187,8 +189,8 @@ export class Agent {
     if (this._el.style.top === "auto" || this._el.style.left !== "auto") {
       const left = window.innerWidth * 0.8;
       const top = (window.innerHeight + document.body.scrollTop) * 0.8;
-      this._el.style.top = `${ top }px`;
-      this._el.style.left = `${ left }px`;
+      this._el.style.top = `${top}px`;
+      this._el.style.left = `${left}px`;
     }
 
     this.resume();
@@ -252,8 +254,12 @@ export class Agent {
 
   private _getDirection(x: number, y: number): Direction {
     const rect = this._el.getBoundingClientRect();
-    const h = parseFloat(getComputedStyle(this._el, null).height.replace("px", ""));
-    const w = parseFloat(getComputedStyle(this._el, null).width.replace("px", ""));
+    const h = parseFloat(
+      getComputedStyle(this._el, null).height.replace("px", "")
+    );
+    const w = parseFloat(
+      getComputedStyle(this._el, null).width.replace("px", "")
+    );
 
     const offset = {
       top: rect.top + document.body.scrollTop,
@@ -264,8 +270,8 @@ export class Agent {
       throw new Error("Direction values missing");
     }
 
-    const centerX = (offset.left + w / 2);
-    const centerY = (offset.top + h / 2);
+    const centerX = offset.left + w / 2;
+    const centerY = offset.top + h / 2;
 
     const a = centerY - y;
     const b = centerX - x;
@@ -275,7 +281,8 @@ export class Agent {
     // Left and Right are for the character, not the screen :-/
     if (-45 <= r && r < 45) return Direction.Right;
     if (45 <= r && r < 135) return Direction.Up;
-    if (135 <= r && r <= 180 || -180 <= r && r < -135) return Direction.Left;
+    if ((135 <= r && r <= 180) || (-180 <= r && r < -135))
+      return Direction.Left;
     if (-135 <= r && r < -45) return Direction.Down;
 
     // sanity check
@@ -355,7 +362,7 @@ export class Agent {
     const m = 5;
     if (top - m < 0) {
       top = m;
-    } else if ((top + bH + m) > wH) {
+    } else if (top + bH + m > wH) {
       top = wH - bH - m;
     }
 
@@ -365,8 +372,8 @@ export class Agent {
       left = wW - bW - m;
     }
 
-    this._el.style.top = `${ top }px`;
-    this._el.style.left = `${ left }px`;
+    this._el.style.top = `${top}px`;
+    this._el.style.left = `${left}px`;
     // reposition balloon
     this._balloon.reposition();
   }
@@ -397,7 +404,10 @@ export class Agent {
     window.addEventListener("mousemove", mouseMoveListener);
     window.addEventListener("mouseup", mouseUpListener);
 
-    this._dragUpdateLoop = window.setTimeout(this._updateLocation.bind(this), 10);
+    this._dragUpdateLoop = window.setTimeout(
+      this._updateLocation.bind(this),
+      10
+    );
   }
 
   private _calculateClickOffset(e: MouseEvent) {
@@ -412,9 +422,12 @@ export class Agent {
 
   private _updateLocation() {
     if (this._targetX && this._targetY) {
-      this._el.style.top = `${ this._targetY }px`;
-      this._el.style.left = `${ this._targetX }px`;
-      this._dragUpdateLoop = window.setTimeout(this._updateLocation.bind(this), 10);
+      this._el.style.top = `${this._targetY}px`;
+      this._el.style.left = `${this._targetX}px`;
+      this._dragUpdateLoop = window.setTimeout(
+        this._updateLocation.bind(this),
+        10
+      );
     }
   }
 
@@ -455,4 +468,3 @@ export class Agent {
     this._balloon.resume();
   }
 }
-
