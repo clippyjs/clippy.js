@@ -1,0 +1,14 @@
+# Creates a release on every version change to the main branch
+name: Release
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create Release
+        uses: halvardssm/github-action-tag-release@1.0.0

@@ -14,17 +14,15 @@ Add this code to you to your page to enable Clippy.js.
 
 ...
 
-<!-- Add these scripts to  the bottom of the page -->
-<!-- jQuery 1.7+ -->
-<script src="jquery.1.7.min.js"></script>
-
-<!-- Clippy.js -->
-<script src="clippy.min.js"></script>
+<!-- Clippy.js CommonJS -->
+<script src="main.js"></script>
+<!-- OR -->
+<!-- Clippy.js Module -->
+<script type="module" src="module.js"></script>
 
 <!-- Init script -->
 <script type="text/javascript">
-    clippy.load('Merlin', function(agent){
-        // do anything with the loaded agent
+    initiateClippy(Agents.Clippy, { debug: true }).then(agent => {
         agent.show();
     });
 </script>

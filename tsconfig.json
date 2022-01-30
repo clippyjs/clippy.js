@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES3",
+    "strict": true,
+    "allowJs": true,
+    "checkJs": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "lib": ["esnext","DOM"]
+  },
+  "include": ["lib"]
+}
