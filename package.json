@@ -17,6 +17,7 @@
     "@parcel/transformer-typescript-types": "^2.2.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "eslint": "^8.8.0",
     "parcel": "^2.2.0",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
@@ -28,6 +29,10 @@
     "watch": "parcel watch",
     "build": "rimraf dist && parcel build",
     "prepack": "yarn build",
-    "prettier": "prettier --write \"lib/**/*.{ts,css}\""
+    "prettier:fix": "prettier --write \"lib/**/*.{ts,css}\"",
+    "prettier:check": "prettier --check \"lib/**/*.{ts,css}\"",
+    "lint:fix": "eslint --fix",
+    "lint:check": "echo 'checking eslint' && eslint && echo 'eslint complete'",
+    "tsc:check": "'checking tsc' && tsc --noEmit && echo 'tsc complete'"
   }
 }

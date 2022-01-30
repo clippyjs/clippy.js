@@ -1,0 +1,25 @@
+# Publishes the package to NPM and GitHub
+name: Publish
+on:
+  release:
+    types: [published]
+
+env:
+  NODE_VERSION: lts
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      - name: Yarn Setup
+        run: |
+          yarn config set npmScopes.journee-live.npmPublishRegistry "https://npm.pkg.github.com"
+      - name: Yarn Install
+        run: yarn --immutable
+      - name: Publish
+        run: yarn npm publish
